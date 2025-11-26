@@ -1,4 +1,4 @@
--- Google Classroom Clone Database Migration
+DROP DATABASE IF EXISTS classroom_clone;
 
 CREATE DATABASE IF NOT EXISTS classroom_clone;
 USE classroom_clone;
@@ -139,12 +139,14 @@ CREATE TABLE user_settings (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Insert default admin user (password: admin123)
+-- Insert default demo users (passwords are plain text for easy debugging)
 INSERT INTO users (username, email, password, first_name, last_name, role) VALUES 
-('admin', 'admin@school.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin', 'User', 'admin');
+('admin', 'admin@vtdt.edu.lv', 'qwe', 'Admin', 'User', 'admin'),
+('teacher', 'teacher@vtdt.edu.lv', 'qwe', 'Teacher', 'Demo', 'teacher'),
+('student', 'student@vtdt.edu.lv', 'qwe', 'Student', 'Demo', 'student');
 
--- Insert default user settings for admin
-INSERT INTO user_settings (user_id) VALUES (1);
+-- Insert default user settings for all users
+INSERT INTO user_settings (user_id) VALUES (1), (2), (3);
 
 -- Create indexes for better performance
 CREATE INDEX idx_users_email ON users(email);

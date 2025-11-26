@@ -66,7 +66,7 @@ if ($current_user['role'] === 'teacher') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pamat skats</title>
+    <title>Dashboard - Classroom Clone</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -76,30 +76,44 @@ if ($current_user['role'] === 'teacher') {
     <header class="header">
         <div class="container">
             <div class="header-content">
-                
+                <a href="dashboard.php" class="logo">
+                    <div class="logo-icon">📚</div>
+                    <span>Classroom</span>
+                </a>
 
                 <nav class="nav-menu">
                     <a href="dashboard.php" class="nav-link active">Dashboard</a>
                     <?php if ($current_user['role'] === 'admin'): ?>
-                        <a href="admin/users.php" class="nav-link">Lietotāji</a>
-                        <a href="admin/history.php" class="nav-link">Iepriekšējās darbības</a>
+                        <a href="admin/users.php" class="nav-link">Users</a>
+                        <a href="admin/history.php" class="nav-link">History</a>
                     <?php elseif ($current_user['role'] === 'teacher'): ?>
-                        <a href="classes.php" class="nav-link">Mani kursi</a>
-                        <a href="create_class.php" class="nav-link">Pievienot kursu</a>
+                        <a href="classes.php" class="nav-link">My Classes</a>
+                        <a href="create_class.php" class="nav-link">Create Class</a>
                     <?php else: ?>
-                        <a href="join_class.php" class="nav-link">Pievienoties kursam</a>
+                        <a href="join_class.php" class="nav-link">Join Class</a>
                     <?php endif; ?>
                 </nav>
 
                 <div class="user-menu">
-                   
-                    
-                    <button><a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                Iziet
-                            </a>
+                    <button class="theme-toggle" title="Toggle theme">
+                        <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
                     </button>
+                    
+                    <div style="position: relative;">
+                        <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
+                             alt="Profile" class="user-avatar" onclick="toggleUserMenu()">
+                        
+                        <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
+                            <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
+                                👤 Profile
+                            </a>
+                            <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
+                                ⚙️ Settings
+                            </a>
+                            <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
+                                🚪 Logout
+                            </a>
                         </div>
-                            
                     </div>
                 </div>
             </div>
@@ -113,8 +127,8 @@ if ($current_user['role'] === 'teacher') {
                 <div class="content">
                     <div class="card-header">
                         <div>
-                            <h1 class="card-title">Admin skats</h1>
-                            <h2>Chaw <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
+                            <h1 class="card-title">Admin Dashboard</h1>
+                            <p class="card-subtitle">System Overview</p>
                         </div>
                     </div>
 
@@ -134,25 +148,59 @@ if ($current_user['role'] === 'teacher') {
                         
                         <div class="card" style="text-align: center;">
                             <div style="font-size: 32px; color: var(--primary-color); margin-bottom: 8px;"><?php echo $total_users; ?></div>
-                            <div style="color: var(--text-secondary); font-size: 14px;">Lietotāju skaits</div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">Total Users</div>
                         </div>
                         
                         <div class="card" style="text-align: center;">
                             <div style="font-size: 32px; color: var(--secondary-color); margin-bottom: 8px;"><?php echo $total_classes; ?></div>
-                            <div style="color: var(--text-secondary); font-size: 14px;">Pieejamie kursi</div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">Total Classes</div>
                         </div>
                         
                         <div class="card" style="text-align: center;">
                             <div style="font-size: 32px; color: var(--warning-color); margin-bottom: 8px;"><?php echo $total_assignments; ?></div>
-                            <div style="color: var(--text-secondary); font-size: 14px;">Pieejamie priekšmeti</div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">Total Assignments</div>
                         </div>
                         
-                        
+                        <div class="card" style="text-align: center;">
+                            <div style="font-size: 32px; color: var(--success-color); margin-bottom: 8px;"><?php echo count($action_history); ?></div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">Today's Actions</div>
+                        </div>
                     </div>
 
-                    
+                    <div class="grid grid-cols-2">
+                        <div class="card">
+                            <h2 style="font-size: 18px; margin-bottom: 16px;">Recent Users</h2>
+                            <?php if (empty($recent_users)): ?>
+                                <p style="color: var(--text-secondary); text-align: center; padding: 20px;">No users found</p>
+                            <?php else: ?>
+                                <?php foreach ($recent_users as $user_item): ?>
+                                    <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; margin-bottom: 8px; background: var(--bg-secondary);">
+                                        <img src="<?php echo $user_item['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
+                                             alt="Avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
+                                        <div style="flex: 1;">
+                                            <div style="font-weight: 500;"><?php echo htmlspecialchars($user_item['first_name'] . ' ' . $user_item['last_name']); ?></div>
+                                            <div style="font-size: 12px; color: var(--text-secondary);"><?php echo getRoleDisplayName($user_item['role']); ?></div>
+                                        </div>
+                                        <div style="font-size: 12px; color: var(--text-tertiary);"><?php echo formatDate($user_item['created_at']); ?></div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
 
-                        
+                        <div class="card">
+                            <h2 style="font-size: 18px; margin-bottom: 16px;">Recent Actions</h2>
+                            <?php if (empty($action_history)): ?>
+                                <p style="color: var(--text-secondary); text-align: center; padding: 20px;">No recent actions</p>
+                            <?php else: ?>
+                                <?php foreach ($action_history as $action): ?>
+                                    <div style="padding: 12px; border-radius: 8px; margin-bottom: 8px; background: var(--bg-secondary);">
+                                        <div style="font-weight: 500; margin-bottom: 4px;"><?php echo htmlspecialchars($action['first_name'] . ' ' . $action['last_name']); ?></div>
+                                        <div style="font-size: 14px; color: var(--text-secondary);"><?php echo htmlspecialchars($action['action_description']); ?></div>
+                                        <div style="font-size: 12px; color: var(--text-tertiary); margin-top: 4px;"><?php echo formatDate($action['created_at']); ?></div>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -163,21 +211,22 @@ if ($current_user['role'] === 'teacher') {
                 <div class="content">
                     <div class="card-header">
                         <div>
-                            <h1 class="card-title">Skolotāju skats</h1>
-                           <h2>Chaw <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
+                            <h1 class="card-title">Teacher Dashboard</h1>
+                            <p class="card-subtitle">Welcome back, <?php echo htmlspecialchars($current_user['first_name']); ?>!</p>
                         </div>
                         <a href="create_class.php" class="btn btn-primary">
-                            <span>➕</span> Pievienot kursu
+                            <span>➕</span> Create Class
                         </a>
                     </div>
 
                     <div class="card">
-                        <h2 style="font-size: 18px; margin-bottom: 16px;">Mani kursi</h2>
+                        <h2 style="font-size: 18px; margin-bottom: 16px;">My Classes</h2>
                         <?php if (empty($user_classes)): ?>
                             <div style="text-align: center; padding: 40px;">
-                                <div style="font-size: 48px; margin-bottom: 16px;"></div>
-                                <h3 style="color: var(--text-primary); margin-bottom: 8px;">Te nekā nav</h3>
-                                <a href="create_class.php" class="btn btn-primary">Pienienot kursu</a>
+                                <div style="font-size: 48px; margin-bottom: 16px;">📚</div>
+                                <h3 style="color: var(--text-primary); margin-bottom: 8px;">No classes yet</h3>
+                                <p style="color: var(--text-secondary); margin-bottom: 20px;">Create your first class to get started</p>
+                                <a href="create_class.php" class="btn btn-primary">Create Class</a>
                             </div>
                         <?php else: ?>
                             <div class="grid grid-cols-3">
@@ -218,22 +267,23 @@ if ($current_user['role'] === 'teacher') {
             <div class="container">
                 <div class="content">
                     <div class="card-header">
-                        
                         <div>
-                            <h1 class="card-title">Skolnieka skats</h1>
-                            <h2>Chaw <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
+                            <h1 class="card-title">Student Dashboard</h1>
+                            <p class="card-subtitle">Welcome back, <?php echo htmlspecialchars($current_user['first_name']); ?>!</p>
                         </div>
                         <a href="join_class.php" class="btn btn-primary">
-                            <span>➕</span> Pievienoties kursam
+                            <span>➕</span> Join Class
                         </a>
                     </div>
 
                     <div class="card">
-                        <h2 style="font-size: 18px; margin-bottom: 16px;">Mani kursi</h2>
+                        <h2 style="font-size: 18px; margin-bottom: 16px;">My Classes</h2>
                         <?php if (empty($user_classes)): ?>
                             <div style="text-align: center; padding: 40px;">
-                                <h3 style="color: var(--text-primary); margin-bottom: 8px;">Te nekā nav</h3>
-                                <a href="join_class.php" class="btn btn-primary">Pievienoties kursam</a>
+                                <div style="font-size: 48px; margin-bottom: 16px;">🎓</div>
+                                <h3 style="color: var(--text-primary); margin-bottom: 8px;">No classes yet</h3>
+                                <p style="color: var(--text-secondary); margin-bottom: 20px;">Join a class to get started</p>
+                                <a href="join_class.php" class="btn btn-primary">Join Class</a>
                             </div>
                         <?php else: ?>
                             <div class="grid grid-cols-3">

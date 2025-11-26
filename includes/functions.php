@@ -244,4 +244,8 @@ function getFlashMessage($type) {
     }
     return null;
 }
+function getDB() {
+    global $user;
+    return $user->conn;
+}
 ?>
