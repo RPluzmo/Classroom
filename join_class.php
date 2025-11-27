@@ -10,10 +10,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $class_code = sanitize($_POST['class_code'] ?? '');
     
     if (empty($class_code)) {
-        $error = 'Class code is required';
+        $error = 'Nepieciešams ievadīt kursa kodu';
     } else {
         if ($classroom->joinClass($current_user['id'], $class_code)) {
-            setFlashMessage('success', 'Successfully joined the class!');
+            setFlashMessage('success', 'Esat vievienojies');
             header('Location: dashboard.php');
             exit();
         } else {
@@ -41,22 +41,19 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Class - Classroom Clone</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
         <div class="container">
             <div class="header-content">
                 <a href="dashboard.php" class="logo">
-                    <div class="logo-icon">📚</div>
+                    <div class="logo-icon"></div>
                     <span>Classroom</span>
                 </a>
 
                 <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link">Dashboard</a>
-                    <a href="join_class.php" class="nav-link active">Join Class</a>
+                    <a href="dashboard.php" class="nav-link"></a>
+                    <a href="join_class.php" class="nav-link active"></a>
                 </nav>
 
                 <div class="user-menu">
@@ -91,8 +88,8 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
                 <div class="card">
                     <div class="card-header">
                         <div>
-                            <h1 class="card-title">Join a Class</h1>
-                            <p class="card-subtitle">Enter the class code provided by your teacher</p>
+                            <h1 class="card-title">Pievienoties kursam</h1>
+                            <p class="card-subtitle">Ievadi kursa kodu</p>
                         </div>
                     </div>
 

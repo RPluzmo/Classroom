@@ -45,9 +45,6 @@ $class_members = $classroom->getClassMembers($class_id);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($class['name']); ?> - Classroom Clone</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
@@ -261,7 +258,7 @@ $class_members = $classroom->getClassMembers($class_id);
                                 </h3>
                                 <?php if (empty($class_members)): ?>
                                     <p style="color: var(--text-secondary); text-align: center; padding: 20px;">
-                                        No students enrolled yet
+                                        Neviens nav pievienojies šim kursam
                                     </p>
                                 <?php else: ?>
                                     <div style="max-height: 300px; overflow-y: auto;">
@@ -296,7 +293,7 @@ $class_members = $classroom->getClassMembers($class_id);
                             </div>
                         <?php endif; ?>
 
-                        <!-- Quick Actions -->
+
                         <div class="card" style="margin-top: 20px;">
                             <h3 style="font-size: 16px; margin-bottom: 12px;">Quick Actions</h3>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
@@ -313,7 +310,7 @@ $class_members = $classroom->getClassMembers($class_id);
                                     </a>
                                 <?php endif; ?>
                                 <a href="dashboard.php" class="btn btn-secondary" style="justify-content: center;">
-                                    <span>🏠</span> Back to Dashboard
+                                   
                                 </a>
                             </div>
                         </div>
@@ -364,7 +361,7 @@ $class_members = $classroom->getClassMembers($class_id);
 
         function removeStudent(studentId) {
             utils.confirmAction('Are you sure you want to remove this student from the class?', () => {
-                window.location.href = 'api/remove_student.php?class_id=<?php echo $class_id; ?>&student_id=' + studentId;
+                window.location.href = 'db/remove_student.php?class_id=<?php echo $class_id; ?>&student_id=' + studentId;
             });
         }
 

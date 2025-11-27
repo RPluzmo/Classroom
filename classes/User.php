@@ -29,53 +29,35 @@ class User {
         }
     }
 
-public function exists($column, $value) {
-    $allowed = ['username', 'email']; // kolonnas whitelists
-
-    if (!in_array($column, $allowed)) {
-        return false;
-    }
-
-    $stmt = $this->conn->prepare("SELECT id FROM users WHERE $column = ? LIMIT 1");
-    $stmt->execute([$value]);
-
-    return $stmt->fetch() !== false;
-}
-
-
     public function login($username, $password) {
-    try {
-        $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
-        $stmt->execute([$username, $username]);
-        $user = $stmt->fetch();
+        try {
+            $stmt = $this->conn->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
+            $stmt->execute([$username, $username]);
+            $user = $stmt->fetch();
 
-        if ($user && $password === $user['password']) {
-
-            // Generate session token
-            $session_token = bin2hex(random_bytes(32));
-            $expires_at = date('Y-m-d H:i:s', strtotime('+30 days'));
-
-            $stmt = $this->conn->prepare("
-                INSERT INTO user_sessions (user_id, session_token, expires_at)
-                VALUES (?, ?, ?)
-            ");
-            $stmt->execute([$user['id'], $session_token, $expires_at]);
-
-            // Save session
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['session_token'] = $session_token;
-            $_SESSION['user_role'] = $user['role'];
-            $_SESSION['username'] = $user['username'];
-
-            return $user;
+            if ($user && $password === $user['password']) {
+                // Generate session token
+                $session_token = bin2hex(random_bytes(32));
+                $expires_at = date('Y-m-d H:i:s', strtotime('+30 days'));
+                
+                $stmt = $this->conn->prepare("INSERT INTO user_sessions (user_id, session_token, expires_at) VALUES (?, ?, ?)");
+                $stmt->execute([$user['id'], $session_token, $expires_at]);
+                
+                // Log action
+                $this->logAction($user['id'], 'login', 'User logged in');
+                
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['session_token'] = $session_token;
+                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['username'] = $user['username'];
+                
+                return $user;
+            }
+            return false;
+        } catch(PDOException $e) {
+            return false;
         }
-
-        return false;
-
-    } catch (PDOException $e) {
-        return false;
     }
-}
 
     public function logout() {
         if (isset($_SESSION['session_token'])) {
@@ -176,8 +158,6 @@ public function exists($column, $value) {
         }
     }
 
-
-    
     public function getActionHistory($limit = 50) {
         try {
             $stmt = $this->conn->prepare("

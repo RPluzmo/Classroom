@@ -3,7 +3,6 @@ DROP DATABASE IF EXISTS classroom_clone;
 CREATE DATABASE IF NOT EXISTS classroom_clone;
 USE classroom_clone;
 
--- Users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -17,7 +16,6 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Classes table
 CREATE TABLE classes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -30,7 +28,6 @@ CREATE TABLE classes (
     FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Class members (students enrolled in classes)
 CREATE TABLE class_members (
     id INT AUTO_INCREMENT PRIMARY KEY,
     class_id INT NOT NULL,
@@ -41,7 +38,6 @@ CREATE TABLE class_members (
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Assignments table
 CREATE TABLE assignments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     class_id INT NOT NULL,
@@ -54,7 +50,6 @@ CREATE TABLE assignments (
     FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE
 );
 
--- Assignment files (attachments)
 CREATE TABLE assignment_files (
     id INT AUTO_INCREMENT PRIMARY KEY,
     assignment_id INT NOT NULL,
@@ -65,7 +60,6 @@ CREATE TABLE assignment_files (
     FOREIGN KEY (assignment_id) REFERENCES assignments(id) ON DELETE CASCADE
 );
 
--- Submissions table
 CREATE TABLE submissions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     assignment_id INT NOT NULL,
@@ -73,14 +67,13 @@ CREATE TABLE submissions (
     submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     grade INT DEFAULT NULL,
     feedback TEXT DEFAULT NULL,
-    graded_at TIMESTAMP DEFAULT NULL,
+    graded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     graded_by INT DEFAULT NULL,
     FOREIGN KEY (assignment_id) REFERENCES assignments(id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (graded_by) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- Submission files
 CREATE TABLE submission_files (
     id INT AUTO_INCREMENT PRIMARY KEY,
     submission_id INT NOT NULL,
@@ -91,7 +84,6 @@ CREATE TABLE submission_files (
     FOREIGN KEY (submission_id) REFERENCES submissions(id) ON DELETE CASCADE
 );
 
--- Comments table (for assignments and submissions)
 CREATE TABLE comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     assignment_id INT DEFAULT NULL,
@@ -105,7 +97,6 @@ CREATE TABLE comments (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Action history for admin tracking
 CREATE TABLE action_history (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -119,7 +110,6 @@ CREATE TABLE action_history (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- User sessions for authentication
 CREATE TABLE user_sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -129,7 +119,6 @@ CREATE TABLE user_sessions (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Settings table (for dark theme etc.)
 CREATE TABLE user_settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
@@ -139,16 +128,13 @@ CREATE TABLE user_settings (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Insert default demo users (passwords are plain text for easy debugging)
 INSERT INTO users (username, email, password, first_name, last_name, role) VALUES 
 ('admin', 'admin@vtdt.edu.lv', 'qwe', 'Admin', 'User', 'admin'),
 ('teacher', 'teacher@vtdt.edu.lv', 'qwe', 'Teacher', 'Demo', 'teacher'),
 ('student', 'student@vtdt.edu.lv', 'qwe', 'Student', 'Demo', 'student');
 
--- Insert default user settings for all users
 INSERT INTO user_settings (user_id) VALUES (1), (2), (3);
 
--- Create indexes for better performance
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_classes_teacher ON classes(teacher_id);

@@ -29,25 +29,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Class - Classroom Clone</title>
+    <title>Izveidot kursu</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <a href="dashboard.php" class="logo">
-                    <div class="logo-icon">📚</div>
-                    <span>Classroom</span>
-                </a>
 
                 <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link">Dashboard</a>
-                    <a href="classes.php" class="nav-link">My Classes</a>
-                    <a href="create_class.php" class="nav-link active">Create Class</a>
+                    <a href="dashboard.php" class="nav-link">Sākums</a>
+                    <a href="classes.php" class="nav-link">Mani kursi</a>
+                    <a href="create_class.php" class="nav-link active">Izveidot kursu</a>
                 </nav>
 
                 <div class="user-menu">
@@ -61,13 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
                             <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                👤 Profile
+                                Profils
                             </a>
                             <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                ⚙️ Settings
+                                Iest
                             </a>
                             <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                🚪 Logout
+                                Iziet
                             </a>
                         </div>
                     </div>
@@ -82,8 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card">
                     <div class="card-header">
                         <div>
-                            <h1 class="card-title">Create New Class</h1>
-                            <p class="card-subtitle">Set up a new classroom for your students</p>
+                            <h1 class="card-title">Izviedo jaunu kursu</h1>
                         </div>
                     </div>
 
@@ -95,28 +87,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <form method="POST" id="createClassForm">
                         <div class="form-group">
-                            <label for="name" class="form-label">Class Name *</label>
+                            <label for="name" class="form-label">Kursa nosaukums</label>
                             <input type="text" id="name" name="name" class="form-control" 
                                    value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>" 
                                    required maxlength="100">
-                            <small style="color: var(--text-tertiary); font-size: 12px;">
-                                Maximum 100 characters
-                            </small>
                         </div>
 
                         <div class="form-group">
-                            <label for="description" class="form-label">Description</label>
+                            <label for="description" class="form-label">Kursa apraksts</label>
                             <textarea id="description" name="description" class="form-control" 
                                       rows="4" maxlength="500"><?php echo isset($_POST['description']) ? htmlspecialchars($_POST['description']) : ''; ?></textarea>
-                            <small style="color: var(--text-tertiary); font-size: 12px;">
-                                Optional: Describe what this class is about (max 500 characters)
-                            </small>
                         </div>
 
                         <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-                            <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text-primary);">
-                                📋 What happens next?
-                            </h3>
                             <ul style="margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
                                 <li>A unique class code will be generated automatically</li>
                                 <li>Students can join using this code or QR code</li>
@@ -127,54 +110,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div style="display: flex; gap: 12px;">
                             <button type="submit" class="btn btn-primary" style="flex: 1;">
-                                <span>✨</span> Create Class
+                                <span>✨</span> Izveidot kursu
                             </button>
                             <a href="dashboard.php" class="btn btn-secondary">
-                                Cancel
+                                Atcelt
                             </a>
                         </div>
                     </form>
-                </div>
-
-                <!-- Tips Section -->
-                <div class="card" style="margin-top: 20px;">
-                    <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--text-primary);">
-                        💡 Tips for creating a great class
-                    </h3>
-                    <div class="grid grid-cols-2" style="gap: 16px;">
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
-                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary-color);">
-                                📝 Clear Naming
-                            </h4>
-                            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-                                Use descriptive names like "Math 101 - Fall 2024" instead of just "Math"
-                            </p>
-                        </div>
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
-                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary-color);">
-                                📚 Detailed Description
-                            </h4>
-                            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-                                Include learning objectives, topics covered, and class expectations
-                            </p>
-                        </div>
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
-                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary-color);">
-                                👥 Class Size
-                            </h4>
-                            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-                                Consider creating multiple classes for different sections or groups
-                            </p>
-                        </div>
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px;">
-                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary-color);">
-                                🎯 First Assignment
-                            </h4>
-                            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-                                Prepare a welcome assignment to help students get familiar with the platform
-                            </p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

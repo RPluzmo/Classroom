@@ -112,17 +112,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($assignment_data['title']); ?> - Classroom Clone</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
         <div class="container">
             <div class="header-content">
                 <a href="dashboard.php" class="logo">
-                    <div class="logo-icon">📚</div>
-                    <span>Classroom</span>
                 </a>
 
                 <nav class="nav-menu">
@@ -137,17 +132,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     <div style="position: relative;">
                         <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
-                             alt="Profile" class="user-avatar" onclick="toggleUserMenu()">
+                             alt="=)" class="user-avatar" onclick="toggleUserMenu()">
                         
                         <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
                             <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                👤 Profile
+                                Profils
                             </a>
                             <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                ⚙️ Settings
+                                Opcijas
                             </a>
                             <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                🚪 Logout
+                                Iziet
                             </a>
                         </div>
                     </div>

@@ -13,15 +13,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = sanitize($_POST['email'] ?? '');
         
         if (empty($first_name) || empty($last_name) || empty($email)) {
-            $error = 'All fields are required';
+            $error = 'Aizpildiet visus lauciņus';
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error = 'Invalid email address';
+            $error = 'Neatbilstoš epasts';
         } else {
             if ($user->updateProfile($current_user['id'], $first_name, $last_name, $email)) {
-                $success = 'Profile updated successfully!';
+                $success = 'Profils izmainīts';
                 $current_user = $user->getCurrentUser(); // Refresh user data
             } else {
-                $error = 'Failed to update profile. Please try again.';
+                $error = 'Nesanāca nomainīt profila attēlu';
             }
         }
     } elseif (isset($_POST['upload_avatar'])) {
@@ -29,26 +29,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $file = $_FILES['avatar'];
             
             // Validate file type
-            $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            $allowed_types = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!in_array($file['type'], $allowed_types)) {
-                $error = 'Invalid file type. Please upload JPG, PNG, or GIF image.';
+                $error = 'Neatbilstošs attēla formāts, tikai: JPG vai PNG';
             } elseif ($file['size'] > 5 * 1024 * 1024) { // 5MB limit
-                $error = 'File too large. Maximum size is 5MB.';
+                $error = 'Attēlam max ir 5MB.';
             } else {
                 $uploaded_file = handleFileUpload($file, 'uploads/avatars/');
                 if ($uploaded_file) {
                     if ($user->updateProfilePicture($current_user['id'], $uploaded_file['path'])) {
-                        $success = 'Profile picture updated successfully!';
+                        $success = 'Profila attēls nomainīts';
                         $current_user = $user->getCurrentUser(); // Refresh user data
                     } else {
-                        $error = 'Failed to update profile picture.';
+                        $error = 'Nesanāca nomainīt profila attēlu';
                     }
                 } else {
-                    $error = 'Failed to upload file.';
+                    $error = 'Nesanāca augšupielādēt';
                 }
             }
         } else {
-            $error = 'Please select a file to upload.';
+            $error = 'Izvēlieties 1 failu ko iestatīt par savu profila attēlu';
         }
     }
 }
@@ -59,33 +59,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Classroom Clone</title>
+    <title>Profils</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <a href="dashboard.php" class="logo">
-                    <div class="logo-icon">📚</div>
-                    <span>Classroom</span>
-                </a>
-
-                <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link">Dashboard</a>
+               <nav class="nav-menu">
+                    <a href="dashboard.php" class="nav-link">Sākumlapa</a>
+                    <a href="dashboard.php" class="nav-link">Sākumlapa</a>
+                    <a href="dashboard.php" class="nav-link">Sākumlapa</a>
+                    <a href="dashboard.php" class="nav-link">Sākumlapa</a>
                     <?php if ($current_user['role'] === 'teacher'): ?>
-                        <a href="classes.php" class="nav-link">My Classes</a>
-                        <a href="create_class.php" class="nav-link">Create Class</a>
+                        <a href="classes.php" class="nav-link">Mani kursi</a>
+                        <a href="create_class.php" class="nav-link">Izveidot kursu</a>
                     <?php elseif ($current_user['role'] === 'student'): ?>
-                        <a href="join_class.php" class="nav-link">Join Class</a>
+                        <a href="join_class.php" class="nav-link">Pievienoties kursam</a>
                     <?php endif; ?>
                 </nav>
 
                 <div class="user-menu">
-                    <button class="theme-toggle" title="Toggle theme">
+                    <button class="theme-toggle">
                         <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
                     </button>
                     
@@ -95,13 +90,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         
                         <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
                             <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                👤 Profile
+                                 Profils
                             </a>
                             <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                ⚙️ Settings
+                                Opcijas
                             </a>
                             <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                🚪 Logout
+                                Iziet
                             </a>
                         </div>
                     </div>
@@ -112,11 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <main class="main-content">
         <div class="container">
-            <div class="content" style="max-width: 800px; margin: 0 auto;">
+            <div class="content" style="max-width: 1025px; margin: 0 auto;">
                 <div class="card-header">
                     <div>
-                        <h1 class="card-title">My Profile</h1>
-                        <p class="card-subtitle">Manage your account information and preferences</p>
+                        <h1 class="card-title">Mans profils</h1>
                     </div>
                 </div>
 
@@ -133,10 +127,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
 
                 <div class="grid grid-cols-3" style="gap: 24px;">
-                    <!-- Profile Picture Section -->
                     <div>
                         <div class="card">
-                            <h3 style="font-size: 16px; margin-bottom: 16px; text-align: center;">Profile Picture</h3>
+                            <h3 style="font-size: 16px; margin-bottom: 16px; text-align: center;">Profila attēls</h3>
                             
                             <div style="text-align: center; margin-bottom: 20px;">
                                 <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
@@ -151,55 +144,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                             <form method="POST" enctype="multipart/form-data">
                                 <div class="form-group">
-                                    <label for="avatar" class="form-label" style="text-align: center; display: block;">Update Picture</label>
+                                    <label for="avatar" class="form-label" style="text-align: center; display: block;">Nomainīt attēlu</label>
                                     <input type="file" id="avatar" name="avatar" class="form-control" 
                                            accept="image/jpeg,image/jpg,image/png,image/gif"
                                            onchange="previewAvatar(this)">
                                 </div>
                                 <button type="submit" name="upload_avatar" class="btn btn-primary" style="width: 100%;">
-                                    <span>📷</span> Upload
+                                    Augšupielādēt
                                 </button>
                             </form>
                         </div>
 
-                        <!-- Account Info -->
                         <div class="card" style="margin-top: 20px;">
-                            <h3 style="font-size: 16px; margin-bottom: 12px;">Account Info</h3>
-                            <div style="font-size: 14px; color: var(--text-secondary);">
-                                <div style="margin-bottom: 8px;">
-                                    <span style="color: var(--text-tertiary);">Username:</span><br>
-                                    <span style="color: var(--text-primary); font-weight: 500;"><?php echo htmlspecialchars($current_user['username']); ?></span>
-                                </div>
-                                <div style="margin-bottom: 8px;">
-                                    <span style="color: var(--text-tertiary);">Role:</span><br>
-                                    <span style="color: var(--text-primary); font-weight: 500;"><?php echo getRoleDisplayName($current_user['role']); ?></span>
-                                </div>
-                                <div>
-                                    <span style="color: var(--text-tertiary);">Member Since:</span><br>
-                                    <span style="color: var(--text-primary); font-weight: 500;">
-                                        <?php echo date('F j, Y', strtotime($current_user['created_at'])); ?>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Profile Information Section -->
-                    <div style="grid-column: span 2;">
-                        <div class="card">
-                            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;">Profile Information</h2>
-                            
-                            <form method="POST" id="profileForm">
+                        <form method="POST" id="profileForm">
+                            <h3>Rediģēt</h3>
                                 <div class="grid grid-cols-2" style="gap: 16px;">
+                                    
                                     <div class="form-group">
-                                        <label for="first_name" class="form-label">First Name *</label>
+                                        <label for="first_name" class="form-label">Vārds</label>
                                         <input type="text" id="first_name" name="first_name" class="form-control" 
                                                value="<?php echo htmlspecialchars($current_user['first_name']); ?>" 
                                                required maxlength="50">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="last_name" class="form-label">Last Name *</label>
+                                        <label for="last_name" class="form-label">Uzvārds</label>
                                         <input type="text" id="last_name" name="last_name" class="form-control" 
                                                value="<?php echo htmlspecialchars($current_user['last_name']); ?>" 
                                                required maxlength="50">
@@ -207,122 +176,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="email" class="form-label">Email Address *</label>
+                                    <label for="email" class="form-label">E-pasts</label>
                                     <input type="email" id="email" name="email" class="form-control" 
                                            value="<?php echo htmlspecialchars($current_user['email']); ?>" 
                                            required maxlength="100">
                                 </div>
 
                                 <button type="submit" name="update_profile" class="btn btn-primary">
-                                    <span>💾</span> Save Changes
+                                    Saglabāt
                                 </button>
                             </form>
+                    </div>
+                </div>
+
+
+                    <div style="grid-column: span 2;">
+                        <div class="card">
+                            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 20px;"></h2>
+                            
+                            
+                            <h3 style="font-size: 16px; margin-bottom: 12px;">Informācija par lietotāju</h3>
+                            <div style="font-size: 14px; color: var(--text-secondary);">
+                                <div style="margin-bottom: 8px;">
+                                    <span style="color: var(--text-tertiary);">Vārds:</span><br>
+                                    <span style="color: var(--text-primary); font-weight: 500;"><?php echo htmlspecialchars($current_user['first_name']); ?></span>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="color: var(--text-tertiary);">Uzvārds:</span><br>
+                                    <span style="color: var(--text-primary); font-weight: 500;"><?php echo htmlspecialchars($current_user['last_name']); ?></span>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="color: var(--text-tertiary);">Lietotājvārds:</span><br>
+                                    <span style="color: var(--text-primary); font-weight: 500;"><?php echo htmlspecialchars($current_user['username']); ?></span>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="color: var(--text-tertiary);">E-pasts:</span><br>
+                                    <span style="color: var(--text-primary); font-weight: 500;"><?php echo htmlspecialchars($current_user['email']); ?></span>
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <span style="color: var(--text-tertiary);">Role:</span><br>
+                                    <span style="color: var(--text-primary); font-weight: 500;"><?php echo getRoleDisplayName($current_user['role']); ?></span>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Statistics -->
-                        <?php if ($current_user['role'] === 'teacher'): ?>
-                            <?php
-                            $teacher_classes = $classroom->getTeacherClasses($current_user['id']);
-                            $total_students = 0;
-                            $total_assignments = 0;
                             
-                            foreach ($teacher_classes as $class) {
-                                $total_students += $class['student_count'];
-                                $class_assignments = $assignment->getAssignmentsByClass($class['id']);
-                                $total_assignments += count($class_assignments);
-                            }
-                            ?>
-                            
-                            <div class="card" style="margin-top: 20px;">
-                                <h3 style="font-size: 18px; margin-bottom: 16px;">Teaching Statistics</h3>
-                                <div class="grid grid-cols-3" style="gap: 16px;">
-                                    <div style="text-align: center; padding: 16px; background: var(--bg-secondary); border-radius: 8px;">
-                                        <div style="font-size: 24px; font-weight: 600; color: var(--primary-color); margin-bottom: 4px;">
-                                            <?php echo count($teacher_classes); ?>
-                                        </div>
-                                        <div style="font-size: 14px; color: var(--text-secondary);">Classes</div>
-                                    </div>
-                                    <div style="text-align: center; padding: 16px; background: var(--bg-secondary); border-radius: 8px;">
-                                        <div style="font-size: 24px; font-weight: 600; color: var(--secondary-color); margin-bottom: 4px;">
-                                            <?php echo $total_students; ?>
-                                        </div>
-                                        <div style="font-size: 14px; color: var(--text-secondary);">Students</div>
-                                    </div>
-                                    <div style="text-align: center; padding: 16px; background: var(--bg-secondary); border-radius: 8px;">
-                                        <div style="font-size: 24px; font-weight: 600; color: var(--warning-color); margin-bottom: 4px;">
-                                            <?php echo $total_assignments; ?>
-                                        </div>
-                                        <div style="font-size: 14px; color: var(--text-secondary);">Assignments</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        <?php elseif ($current_user['role'] === 'student'): ?>
-                            <?php
-                            $student_classes = $classroom->getStudentClasses($current_user['id']);
-                            $total_assignments = 0;
-                            $completed_assignments = 0;
-                            
-                            foreach ($student_classes as $class) {
-                                $class_assignments = $assignment->getAssignmentsByClass($class['id']);
-                                foreach ($class_assignments as $assign) {
-                                    $total_assignments++;
-                                    $submission = $assignment->getSubmission($assign['id'], $current_user['id']);
-                                    if ($submission) {
-                                        $completed_assignments++;
-                                    }
-                                }
-                            }
-                            ?>
-                            
-                            <div class="card" style="margin-top: 20px;">
-                                <h3 style="font-size: 18px; margin-bottom: 16px;">Learning Statistics</h3>
-                                <div class="grid grid-cols-3" style="gap: 16px;">
-                                    <div style="text-align: center; padding: 16px; background: var(--bg-secondary); border-radius: 8px;">
-                                        <div style="font-size: 24px; font-weight: 600; color: var(--primary-color); margin-bottom: 4px;">
-                                            <?php echo count($student_classes); ?>
-                                        </div>
-                                        <div style="font-size: 14px; color: var(--text-secondary);">Classes</div>
-                                    </div>
-                                    <div style="text-align: center; padding: 16px; background: var(--bg-secondary); border-radius: 8px;">
-                                        <div style="font-size: 24px; font-weight: 600; color: var(--secondary-color); margin-bottom: 4px;">
-                                            <?php echo $completed_assignments; ?>
-                                        </div>
-                                        <div style="font-size: 14px; color: var(--text-secondary);">Completed</div>
-                                    </div>
-                                    <div style="text-align: center; padding: 16px; background: var(--bg-secondary); border-radius: 8px;">
-                                        <div style="font-size: 24px; font-weight: 600; color: var(--warning-color); margin-bottom: 4px;">
-                                            <?php echo $total_assignments - $completed_assignments; ?>
-                                        </div>
-                                        <div style="font-size: 14px; color: var(--text-secondary);">Pending</div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-
-                        <!-- Quick Actions -->
-                        <div class="card" style="margin-top: 20px;">
-                            <h3 style="font-size: 16px; margin-bottom: 12px;">Quick Actions</h3>
-                            <div class="grid grid-cols-2" style="gap: 12px;">
-                                <a href="settings.php" class="btn btn-secondary" style="justify-content: center;">
-                                    <span>⚙️</span> Settings
-                                </a>
-                                <a href="dashboard.php" class="btn btn-secondary" style="justify-content: center;">
-                                    <span>🏠</span> Dashboard
-                                </a>
-                                <?php if ($current_user['role'] === 'teacher'): ?>
-                                    <a href="create_class.php" class="btn btn-secondary" style="justify-content: center;">
-                                        <span>➕</span> Create Class
-                                    </a>
-                                    <a href="classes.php" class="btn btn-secondary" style="justify-content: center;">
-                                        <span>📚</span> My Classes
-                                    </a>
-                                <?php elseif ($current_user['role'] === 'student'): ?>
-                                    <a href="join_class.php" class="btn btn-secondary" style="justify-content: center;">
-                                        <span>➕</span> Join Class
-                                    </a>
-                                <?php endif; ?>
-                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -332,22 +231,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script src="assets/js/script.js"></script>
     <script>
-        // Form validation
         const validator = new FormValidator('profileForm');
         validator.addRule('first_name', [
-            { type: 'required', message: 'First name is required' },
-            { type: 'minLength', value: 2, message: 'First name must be at least 2 characters' }
+            { type: 'required', message: 'Aizmisāt savu vārdu' },
+            { type: 'minLength', value: 2, message: 'Vismaz 2 simboli yknow kā CJ' }
         ]);
         validator.addRule('last_name', [
-            { type: 'required', message: 'Last name is required' },
-            { type: 'minLength', value: 2, message: 'Last name must be at least 2 characters' }
+            { type: 'required', message: 'Aizmisāt savu uzvārdu' },
+            { type: 'minLength', value: 2, message: 'Vismaz 2 simboli' }
         ]);
         validator.addRule('email', [
-            { type: 'required', message: 'Email is required' },
-            { type: 'email', message: 'Please enter a valid email address' }
+            { type: 'required', message: 'Ievadiet e-pastu' },
+            { type: 'email', message: 'Tikai atbilstošu epastu' }
         ]);
 
-        // Avatar preview
         function previewAvatar(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -368,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             menu.classList.toggle('d-none');
         }
 
-        // Close menu when clicking outside
+
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('userMenu');
             const avatar = document.querySelector('.user-avatar');

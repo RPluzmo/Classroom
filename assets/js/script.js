@@ -1,6 +1,3 @@
-// Google Classroom Clone - Main JavaScript
-
-// Theme Management
 class ThemeManager {
     constructor() {
         this.currentTheme = localStorage.getItem('theme') || 'light';
@@ -22,8 +19,7 @@ class ThemeManager {
         const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
         this.applyTheme(newTheme);
         
-        // Save to server
-        fetch('api/toggle_theme.php', {
+        fetch('db/toggle_theme.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +39,6 @@ class ThemeManager {
         if (toggleBtn) {
             toggleBtn.addEventListener('click', () => this.toggleTheme());
             
-            // Update icon based on current theme
             this.updateThemeIcon(toggleBtn);
         }
     }
@@ -51,10 +46,10 @@ class ThemeManager {
     updateThemeIcon(button) {
         if (this.currentTheme === 'dark') {
             button.innerHTML = '☀️';
-            button.title = 'Switch to light theme';
+            button.title = 'Giašs';
         } else {
             button.innerHTML = '🌙';
-            button.title = 'Switch to dark theme';
+            button.title = 'Tumšs';
         }
     }
 }
