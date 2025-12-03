@@ -1,22 +1,23 @@
 <?php
 session_start();
 
-// Include all classes
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../classes/User.php';
-require_once __DIR__ . '/../classes/Classroom.php';
-require_once __DIR__ . '/../classes/Assignment.php';
-require_once __DIR__ . '/../classes/Comment.php';
-require_once __DIR__ . '/../classes/Settings.php';
+if (!isset($_SESSION['dark_theme'])) {
+    $_SESSION['dark_theme'] = 0;
+}
 
-// Initialize objects
+require_once __DIR__ . '/config.php'; 
+require_once __DIR__ . '/classes/User.php'; 
+require_once __DIR__ . '/classes/Classroom.php';
+require_once __DIR__ . '/classes/Assignment.php';
+require_once __DIR__ . '/classes/Comment.php';
+
 $user = new User();
 $classroom = new Classroom();
 $assignment = new Assignment();
 $comment = new Comment();
-$settings = new Settings();
 
-// Check authentication and redirect if needed
+
+
 function requireAuth() {
     global $user;
     if (!$user->isAuthenticated()) {
@@ -25,7 +26,7 @@ function requireAuth() {
     }
 }
 
-// Check user role
+
 function requireRole($role) {
     global $user;
     requireAuth();
@@ -37,7 +38,6 @@ function requireRole($role) {
     }
 }
 
-// Check if user can access resource (owner or admin)
 function canAccess($resource_type, $resource_id) {
     global $user;
     $current_user = $user->getCurrentUser();
@@ -64,7 +64,7 @@ function canAccess($resource_type, $resource_id) {
 }
 
 function canAccessClass($user_id, $class_id) {
-    global $classroom;
+    global $classroom, $db;
     
     $class = $classroom->getClassById($class_id);
     if (!$class) {
@@ -77,8 +77,9 @@ function canAccessClass($user_id, $class_id) {
     }
 
     // Check if student is enrolled
-    global $db;
-    $conn = $db->connect();
+    // Piezīme: Ja $db nav globāls, tas var radīt kļūdu. Jūsu esošajā kodā $db ir izveidots, 
+    // bet šeit tiek mēģināts tam piekļūt. Iesaku to izveidot canAccessClass iekšpusē, ja tā nav globālā mainīgā, kas satur DB savienojumu.
+    $conn = (new Database())->connect();
     $stmt = $conn->prepare("SELECT id FROM class_members WHERE class_id = ? AND student_id = ?");
     $stmt->execute([$class_id, $user_id]);
     return $stmt->fetch() !== false;
@@ -118,6 +119,7 @@ function canAccessSubmission($user_id, $submission_id) {
     }
 
     // Teacher can access submissions in their classes
+    // Piezīme: Nav 'teacher_id' submissions tabulā. Tāpēc SQL vaicājumā bija pareizi pievienots JOIN.
     if ($submission['teacher_id'] == $user_id) {
         return true;
     }
@@ -127,6 +129,7 @@ function canAccessSubmission($user_id, $submission_id) {
 
 // File upload helper
 function handleFileUpload($file, $upload_dir = 'uploads/') {
+// (Pārējais kods paliek nemainīgs)
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
         return null;
     }
@@ -166,6 +169,7 @@ function handleFileUpload($file, $upload_dir = 'uploads/') {
 
 // Format date helper
 function formatDate($date_string) {
+// (Pārējais kods paliek nemainīgs)
     if (!$date_string) return 'N/A';
     
     $date = new DateTime($date_string);
@@ -201,23 +205,6 @@ function getRoleDisplayName($role) {
     return $roles[$role] ?? ucfirst($role);
 }
 
-// Load user settings into session
-function loadUserSettings() {
-    global $settings;
-    
-    if (isset($_SESSION['user_id'])) {
-        $user_settings = $settings->getUserSettings($_SESSION['user_id']);
-        if ($user_settings) {
-            $_SESSION['dark_theme'] = (bool)$user_settings['dark_theme'];
-            $_SESSION['language'] = $user_settings['language'];
-            $_SESSION['notifications'] = (bool)$user_settings['notifications'];
-        }
-    }
-}
-
-// Initialize user settings
-loadUserSettings();
-
 // Generate CSRF token
 function generateCSRFToken() {
     if (!isset($_SESSION['csrf_token'])) {
@@ -244,4 +231,3 @@ function getFlashMessage($type) {
     }
     return null;
 }
-?>

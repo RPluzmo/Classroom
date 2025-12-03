@@ -1,115 +1,7 @@
+
 <?php
-require_once 'includes/functions.php';
-requireRole('teacher');
-
-$class_id = $_GET['class_id'] ?? null;
-if (!$class_id) {
-    header('Location: dashboard.php');
-    exit();
-}
-
-$class = $classroom->getClassById($class_id);
-if (!$class || $class['teacher_id'] != $user->getCurrentUser()['id']) {
-    setFlashMessage('error', 'Class not found or access denied');
-    header('Location: dashboard.php');
-    exit();
-}
-
-$current_user = $user->getCurrentUser();
-$error = '';
-$success = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = sanitize($_POST['title'] ?? '');
-    $description = sanitize($_POST['description'] ?? '');
-    $due_date = sanitize($_POST['due_date'] ?? '');
-    $max_points = intval($_POST['max_points'] ?? 100);
-    
-    if (empty($title)) {
-        $error = 'Assignment title is required';
-    } else {
-        $assignment_id = $assignment->createAssignment($class_id, $title, $description, $due_date ?: null, $max_points);
-        if ($assignment_id) {
-            // Handle file uploads
-            if (!empty($_FILES['attachments'])) {
-                foreach ($_FILES['attachments']['name'] as $key => $name) {
-                    if ($_FILES['attachments']['error'][$key] === UPLOAD_ERR_OK) {
-                        $file = [
-                            'name' => $name,
-                            'type' => $_FILES['attachments']['type'][$key],
-                            'tmp_name' => $_FILES['attachments']['tmp_name'][$key],
-                            'error' => $_FILES['attachments']['error'][$key],
-                            'size' => $_FILES['attachments']['size'][$key]
-                        ];
-                        
-                        $uploaded_file = handleFileUpload($file, 'uploads/assignments/');
-                        if ($uploaded_file) {
-                            $assignment->addAssignmentFile($assignment_id, $uploaded_file['name'], $uploaded_file['path'], $uploaded_file['size']);
-                        }
-                    }
-                }
-            }
-            
-            setFlashMessage('success', 'Assignment created successfully!');
-            header('Location: assignment.php?id=' . $assignment_id);
-            exit();
-        } else {
-            $error = 'Failed to create assignment. Please try again.';
-        }
-    }
-}
+    require "../views/components/header.php";
 ?>
-<!DOCTYPE html>
-<html lang="en" data-theme="<?php echo $_SESSION['dark_theme'] ? 'dark' : 'light'; ?>">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Assignment - Classroom Clone</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="dashboard.php" class="logo">
-                    <div class="logo-icon">📚</div>
-                    <span>Classroom</span>
-                </a>
-
-                <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link">Dashboard</a>
-                    <a href="classes.php" class="nav-link">My Classes</a>
-                    <a href="create_class.php" class="nav-link">Create Class</a>
-                </nav>
-
-                <div class="user-menu">
-                    <button class="theme-toggle" title="Toggle theme">
-                        <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
-                    </button>
-                    
-                    <div style="position: relative;">
-                        <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
-                             alt="Profile" class="user-avatar" onclick="toggleUserMenu()">
-                        
-                        <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
-                            <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                👤 Profile
-                            </a>
-                            <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                ⚙️ Settings
-                            </a>
-                            <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                🚪 Logout
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
 
     <main class="main-content">
         <div class="container">
@@ -264,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </main>
 
-    <script src="assets/js/script.js"></script>
+    <script src="../../../../../../assets/js/script.js"></script>
     <script>
         // Form validation
         const validator = new FormValidator('createAssignmentForm');

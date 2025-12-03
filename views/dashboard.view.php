@@ -1,120 +1,8 @@
 <?php
-require_once 'includes/functions.php';
-requireAuth();
-
-$current_user = $user->getCurrentUser();
-$user_classes = [];
-$user_assignments = [];
-
-// Get data based on user role
-if ($current_user['role'] === 'teacher') {
-    $user_classes = $classroom->getTeacherClasses($current_user['id']);
-    
-    // Get recent assignments from all classes
-    $recent_assignments = [];
-    foreach ($user_classes as $class) {
-        $class_assignments = $assignment->getAssignmentsByClass($class['id']);
-        $recent_assignments = array_merge($recent_assignments, $class_assignments);
-    }
-    
-    // Sort by creation date
-    usort($recent_assignments, function($a, $b) {
-        return strtotime($b['created_at']) - strtotime($a['created_at']);
-    });
-    
-    $user_assignments = array_slice($recent_assignments, 0, 5);
-    
-} elseif ($current_user['role'] === 'student') {
-    $user_classes = $classroom->getStudentClasses($current_user['id']);
-    
-    // Get assignments from enrolled classes
-    $all_assignments = [];
-    foreach ($user_classes as $class) {
-        $class_assignments = $assignment->getAssignmentsByClass($class['id']);
-        foreach ($class_assignments as $assign) {
-            $assign['class_name'] = $class['name'];
-            $assign['submission'] = $assignment->getSubmission($assign['id'], $current_user['id']);
-            $all_assignments[] = $assign;
-        }
-    }
-    
-    // Sort by due date and creation date
-    usort($all_assignments, function($a, $b) {
-        // First sort by submission status
-        $a_submitted = $a['submission'] ? 1 : 0;
-        $b_submitted = $b['submission'] ? 1 : 0;
-        
-        if ($a_submitted !== $b_submitted) {
-            return $a_submitted - $b_submitted;
-        }
-        
-        // Then sort by due date
-        $a_due = $a['due_date'] ? strtotime($a['due_date']) : 9999999999;
-        $b_due = $b['due_date'] ? strtotime($b['due_date']) : 9999999999;
-        
-        return $a_due - $b_due;
-    });
-    
-    $user_assignments = array_slice($all_assignments, 0, 5);
-} elseif ($current_user['role'] === 'admin') {
-    $recent_users = array_slice($user->getAllUsers(), 0, 5);
-    $action_history = $user->getActionHistory(10);
-}
+    require "../views/components/header.php";
 ?>
-<!DOCTYPE html>
-<html lang="en" data-theme="<?php echo $_SESSION['dark_theme'] ? 'dark' : 'light'; ?>">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pamat skats</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                
 
-                <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link active">Dashboard</a>
-                    <?php if ($current_user['role'] === 'admin'): ?>
-                        <a href="admin/users.php" class="nav-link">Lietotāji</a>
-                        <a href="admin/history.php" class="nav-link">Iepriekšējās darbības</a>
-                    <?php elseif ($current_user['role'] === 'teacher'): ?>
-                        <a href="classes.php" class="nav-link">Mani kursi</a>
-                        <a href="create_class.php" class="nav-link">Pievienot kursu</a>
-                    <?php else: ?>
-                        <a href="join_class.php" class="nav-link">Pievienoties kursam</a>
-                    <?php endif; ?>
-                </nav>
-
-                <div class="user-menu">
-                    <button class="theme-toggle" title="Toggle theme">
-                        <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
-                    </button>
-                    
-                    <div style="position: relative;">
-                        <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
-                             alt="Profile" class="user-avatar" onclick="toggleUserMenu()">
-                        
-                        <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
-                            <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                 Profils
-                            </a>
-                            <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                Opcijas
-                            </a>
-                            <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                Iziet
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="main-content">
+<main class="main-content">
         <?php if ($current_user['role'] === 'admin'): ?>
             
             <div class="container">
@@ -122,7 +10,7 @@ if ($current_user['role'] === 'teacher') {
                     <div class="card-header">
                         <div>
                             <h1 class="card-title">Admin skats</h1>
-                            <h2>Sveiks/a <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
+                            <h2>Čau <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
                         </div>
                     </div>
 
@@ -172,7 +60,7 @@ if ($current_user['role'] === 'teacher') {
                             <h1 class="card-title">Skolotāju skats</h1>
                            <h2>Sveiks/a <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
                         </div>
-                        <a href="create_class.php" class="btn btn-primary">
+                        <a href="controllers/teacher/create_class.php" class="btn btn-primary">
                             <span>➕</span> Pievienot kursu
                         </a>
                     </div>
@@ -183,7 +71,7 @@ if ($current_user['role'] === 'teacher') {
                             <div style="text-align: center; padding: 40px;">
                                 <div style="font-size: 48px; margin-bottom: 16px;"></div>
                                 <h3 style="color: var(--text-primary); margin-bottom: 8px;">Te nekā nav</h3>
-                                <a href="create_class.php" class="btn btn-primary">Pienienot kursu</a>
+                                <a href="controllers/teacher/create_class.php" class="btn btn-primary">Pienienot kursu</a>
                             </div>
                         <?php else: ?>
                             <div class="grid grid-cols-3">
@@ -229,7 +117,7 @@ if ($current_user['role'] === 'teacher') {
                             <h1 class="card-title">Skolnieka skats</h1>
                             <h2>Chaw <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
                         </div>
-                        <a href="join_class.php" class="btn btn-primary">
+                        <a href="../controllers/join_class.php" class="btn btn-primary">
                             <span>➕</span> Pievienoties kursam
                         </a>
                     </div>
@@ -239,7 +127,7 @@ if ($current_user['role'] === 'teacher') {
                         <?php if (empty($user_classes)): ?>
                             <div style="text-align: center; padding: 40px;">
                                 <h3 style="color: var(--text-primary); margin-bottom: 8px;">Te nekā nav</h3>
-                                <a href="join_class.php" class="btn btn-primary">Pievienoties kursam</a>
+                                <a href="controllers/student/join_class.php" class="btn btn-primary">Pievienoties kursam</a>
                             </div>
                         <?php else: ?>
                             <div class="grid grid-cols-3">
@@ -284,14 +172,13 @@ if ($current_user['role'] === 'teacher') {
         <?php endif; ?>
     </main>
 
-    <script src="assets/js/script.js"></script>
+    <script src="../assets/js/script.js"></script>
     <script>
         function toggleUserMenu() {
             const menu = document.getElementById('userMenu');
             menu.classList.toggle('d-none');
         }
 
-        // Close menu when clicking outside
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('userMenu');
             const avatar = document.querySelector('.user-avatar');
@@ -301,5 +188,5 @@ if ($current_user['role'] === 'teacher') {
             }
         });
     </script>
-</body>
-</html>
+
+<?php require "../views/components/footer.php"; ?>

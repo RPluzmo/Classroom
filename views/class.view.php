@@ -1,95 +1,6 @@
 <?php
-require_once 'includes/functions.php';
-requireAuth();
-
-$class_id = $_GET['id'] ?? null;
-if (!$class_id) {
-    header('Location: dashboard.php');
-    exit();
-}
-
-$class = $classroom->getClassById($class_id);
-if (!$class) {
-    setFlashMessage('error', 'Class not found');
-    header('Location: dashboard.php');
-    exit();
-}
-
-$current_user = $user->getCurrentUser();
-
-// Check permissions
-if ($current_user['role'] === 'teacher' && $class['teacher_id'] != $current_user['id']) {
-    setFlashMessage('error', 'You do not have permission to view this class');
-    header('Location: dashboard.php');
-    exit();
-} elseif ($current_user['role'] === 'student') {
-    // Check if student is enrolled
-    $conn = (new Database())->connect();
-    $stmt = $conn->prepare("SELECT id FROM class_members WHERE class_id = ? AND student_id = ?");
-    $stmt->execute([$class_id, $current_user['id']]);
-    if (!$stmt->fetch()) {
-        setFlashMessage('error', 'You are not enrolled in this class');
-        header('Location: dashboard.php');
-        exit();
-    }
-}
-
-$assignments = $assignment->getAssignmentsByClass($class_id);
-$class_members = $classroom->getClassMembers($class_id);
+    require "../views/components/header.php";
 ?>
-
-<!DOCTYPE html>
-<html lang="en" data-theme="<?php echo $_SESSION['dark_theme'] ? 'dark' : 'light'; ?>">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($class['name']); ?> - Classroom Clone</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="dashboard.php" class="logo">
-                    <div class="logo-icon">📚</div>
-                    <span>Classroom</span>
-                </a>
-
-                <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link">Dashboard</a>
-                    <?php if ($current_user['role'] === 'teacher'): ?>
-                        <a href="classes.php" class="nav-link">My Classes</a>
-                        <a href="create_class.php" class="nav-link">Create Class</a>
-                    <?php else: ?>
-                        <a href="join_class.php" class="nav-link">Join Class</a>
-                    <?php endif; ?>
-                </nav>
-
-                <div class="user-menu">
-                    <button class="theme-toggle" title="Toggle theme">
-                        <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
-                    </button>
-                    
-                    <div style="position: relative;">
-                        <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
-                             alt="Profile" class="user-avatar" onclick="toggleUserMenu()">
-                        
-                        <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
-                            <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                👤 Profile
-                            </a>
-                            <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                ⚙️ Settings
-                            </a>
-                            <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                🚪 Logout
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
 
     <main class="main-content">
         <div class="container">
@@ -117,7 +28,7 @@ $class_members = $classroom->getClassMembers($class_id);
                                 <button onclick="copyClassCode()" class="btn btn-secondary copy-btn" data-copy="<?php echo htmlspecialchars($class['class_code']); ?>">
                                     <span>📋</span> Copy Code
                                 </button>
-                                <a href="create_assignment.php?class_id=<?php echo $class_id; ?>" class="btn btn-primary">
+                                <a href="teacher/create_assignment.php?class_id=<?php echo $class_id; ?>" class="btn btn-primary">
                                     <span>➕</span> Create Assignment
                                 </a>
                             <?php endif; ?>
@@ -348,7 +259,7 @@ $class_members = $classroom->getClassMembers($class_id);
         </div>
     </div>
 
-    <script src="assets/js/script.js"></script>
+    <script src="../../../../../../assets/js/script.js"></script>
     <script>
         function showQRCode() {
             QRCodeManager.generateClassCodeModal('<?php echo htmlspecialchars($class['class_code']); ?>', '<?php echo htmlspecialchars($class['name']); ?>');
@@ -361,7 +272,7 @@ $class_members = $classroom->getClassMembers($class_id);
 
         function removeStudent(studentId) {
             utils.confirmAction('Are you sure you want to remove this student from the class?', () => {
-                window.location.href = 'db/remove_student.php?class_id=<?php echo $class_id; ?>&student_id=' + studentId;
+                window.location.href = 'class.view.php?class_id=<?php echo $class_id; ?>&student_id=' + studentId;
             });
         }
 

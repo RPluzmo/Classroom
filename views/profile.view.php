@@ -1,109 +1,6 @@
 <?php
-require_once 'includes/functions.php';
-requireAuth();
-
-$current_user = $user->getCurrentUser();
-$error = '';
-$success = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['update_profile'])) {
-        $first_name = sanitize($_POST['first_name'] ?? '');
-        $last_name = sanitize($_POST['last_name'] ?? '');
-        $email = sanitize($_POST['email'] ?? '');
-        
-        if (empty($first_name) || empty($last_name) || empty($email)) {
-            $error = 'Aizpildiet visus lauciņus';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error = 'Neatbilstoš epasts';
-        } else {
-            if ($user->updateProfile($current_user['id'], $first_name, $last_name, $email)) {
-                $success = 'Profils izmainīts';
-                $current_user = $user->getCurrentUser(); // Refresh user data
-            } else {
-                $error = 'Nesanāca nomainīt profila attēlu';
-            }
-        }
-    } elseif (isset($_POST['upload_avatar'])) {
-        if (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
-            $file = $_FILES['avatar'];
-            
-            // Validate file type
-            $allowed_types = ['image/jpeg', 'image/jpg', 'image/png'];
-            if (!in_array($file['type'], $allowed_types)) {
-                $error = 'Neatbilstošs attēla formāts, tikai: JPG vai PNG';
-            } elseif ($file['size'] > 5 * 1024 * 1024) { // 5MB limit
-                $error = 'Attēlam max ir 5MB.';
-            } else {
-                $uploaded_file = handleFileUpload($file, 'uploads/avatars/');
-                if ($uploaded_file) {
-                    if ($user->updateProfilePicture($current_user['id'], $uploaded_file['path'])) {
-                        $success = 'Profila attēls nomainīts';
-                        $current_user = $user->getCurrentUser(); // Refresh user data
-                    } else {
-                        $error = 'Nesanāca nomainīt profila attēlu';
-                    }
-                } else {
-                    $error = 'Nesanāca augšupielādēt';
-                }
-            }
-        } else {
-            $error = 'Izvēlieties 1 failu ko iestatīt par savu profila attēlu';
-        }
-    }
-}
+    require "../views/components/header.php";
 ?>
-
-<!DOCTYPE html>
-<html lang="en" data-theme="<?php echo $_SESSION['dark_theme'] ? 'dark' : 'light'; ?>">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profils</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-               <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link">Sākumlapa</a>
-                    <a href="dashboard.php" class="nav-link">Sākumlapa</a>
-                    <a href="dashboard.php" class="nav-link">Sākumlapa</a>
-                    <a href="dashboard.php" class="nav-link">Sākumlapa</a>
-                    <?php if ($current_user['role'] === 'teacher'): ?>
-                        <a href="classes.php" class="nav-link">Mani kursi</a>
-                        <a href="create_class.php" class="nav-link">Izveidot kursu</a>
-                    <?php elseif ($current_user['role'] === 'student'): ?>
-                        <a href="join_class.php" class="nav-link">Pievienoties kursam</a>
-                    <?php endif; ?>
-                </nav>
-
-                <div class="user-menu">
-                    <button class="theme-toggle">
-                        <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
-                    </button>
-                    
-                    <div style="position: relative;">
-                        <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
-                             alt="Profile" class="user-avatar" onclick="toggleUserMenu()">
-                        
-                        <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
-                            <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                 Profils
-                            </a>
-                            <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                Opcijas
-                            </a>
-                            <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                Iziet
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
 
     <main class="main-content">
         <div class="container">
@@ -229,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </main>
 
-    <script src="assets/js/script.js"></script>
+    <script src="../../../../../../assets/js/script.js"></script>
     <script>
         const validator = new FormValidator('profileForm');
         validator.addRule('first_name', [

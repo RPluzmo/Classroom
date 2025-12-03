@@ -1,11 +1,31 @@
 <?php
 class User {
     private $db;
-    private $conn;
+    public $conn;
 
     public function __construct() {
         $this->db = new Database();
         $this->conn = $this->db->connect();
+    }
+
+public function exists(string $column, string $value): bool {
+        try {
+            // Pārbauda, lai $column būtu drošs lauks
+            if (!in_array($column, ['email', 'username'])) {
+                return false;
+            }
+
+            // Izpilda vaicājumu
+            $stmt = $this->conn->prepare("SELECT COUNT(*) FROM users WHERE {$column} = ?");
+            $stmt->execute([$value]);
+            
+            // Atgriež TRUE, ja skaits ir lielāks par 0
+            return $stmt->fetchColumn() > 0;
+
+        } catch (PDOException $e) {
+            // Kļūdas apstrāde
+            return false;
+        }
     }
 
     public function register($username, $email, $password, $first_name, $last_name, $role = 'student') {
@@ -188,5 +208,31 @@ class User {
             // Log errors but don't break the application
         }
     }
+
+    public function adminUpdateUser(int $admin_id, int $user_id, string $first_name, string $last_name, $password = null): bool {
+        $sql = "UPDATE users SET first_name = ?, last_name = ?";
+        $params = [$first_name, $last_name];
+        
+        if (!empty($password)) {
+            // Jūsu esošā klase glabā paroles kā plain text. Drošības labad vajadzētu izmantot password_hash, bet šajā piemērā mēs pieturamies pie Jūsu esošās loģikas.
+            $sql .= ", password = ?";
+            $params[] = $password;
+        }
+        
+        $sql .= " WHERE id = ?";
+        $params[] = $user_id;
+        
+        try {
+            $stmt = $this->conn->prepare($sql);
+            $result = $stmt->execute($params);
+            
+            if ($result) {
+                $this->logAction($admin_id, 'user_data_updated', "Admin atjaunināja lietotāja ID $user_id datus.", $user_id, 'user');
+            }
+            
+            return $result;
+        } catch(PDOException $e) {
+            return false;
+        }
+    }
 }
-?>

@@ -1,86 +1,6 @@
 <?php
-require_once 'includes/functions.php';
-requireRole('student');
-
-$current_user = $user->getCurrentUser();
-$error = '';
-$success = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $class_code = sanitize($_POST['class_code'] ?? '');
-    
-    if (empty($class_code)) {
-        $error = 'Nepieciešams ievadīt kursa kodu';
-    } else {
-        if ($classroom->joinClass($current_user['id'], $class_code)) {
-            setFlashMessage('success', 'Esat vievienojies');
-            header('Location: dashboard.php');
-            exit();
-        } else {
-            $error = 'Invalid class code or you are already enrolled in this class';
-        }
-    }
-}
-
-// Handle QR code join (GET parameter)
-if (isset($_GET['code']) && !empty($_GET['code'])) {
-    $class_code = sanitize($_GET['code']);
-    if ($classroom->joinClass($current_user['id'], $class_code)) {
-        setFlashMessage('success', 'Successfully joined the class!');
-        header('Location: dashboard.php');
-        exit();
-    } else {
-        $error = 'Invalid class code or you are already enrolled in this class';
-    }
-}
+    require "../views/components/header.php";
 ?>
-<!DOCTYPE html>
-<html lang="en" data-theme="<?php echo $_SESSION['dark_theme'] ? 'dark' : 'light'; ?>">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Class - Classroom Clone</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="dashboard.php" class="logo">
-                    <div class="logo-icon"></div>
-                    <span>Classroom</span>
-                </a>
-
-                <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link"></a>
-                    <a href="join_class.php" class="nav-link active"></a>
-                </nav>
-
-                <div class="user-menu">
-                    <button class="theme-toggle" title="Toggle theme">
-                        <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
-                    </button>
-                    
-                    <div style="position: relative;">
-                        <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
-                             alt="Profile" class="user-avatar" onclick="toggleUserMenu()">
-                        
-                        <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
-                            <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                👤 Profile
-                            </a>
-                            <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                ⚙️ Settings
-                            </a>
-                            <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                🚪 Logout
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
 
     <main class="main-content">
         <div class="container">
@@ -197,7 +117,7 @@ if (isset($_GET['code']) && !empty($_GET['code'])) {
         </div>
     </main>
 
-    <script src="assets/js/script.js"></script>
+    <script src="../../../../../../../assets/js/script.js"></script>
     <script>
         // Form validation
         const validator = new FormValidator('joinClassForm');

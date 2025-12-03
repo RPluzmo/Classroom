@@ -1,73 +1,6 @@
 <?php
-require_once 'includes/functions.php';
-requireRole('teacher');
-
-$current_user = $user->getCurrentUser();
-$error = '';
-$success = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = sanitize($_POST['name'] ?? '');
-    $description = sanitize($_POST['description'] ?? '');
-    
-    if (empty($name)) {
-        $error = 'Class name is required';
-    } else {
-        $class_id = $classroom->createClass($current_user['id'], $name, $description);
-        if ($class_id) {
-            setFlashMessage('success', 'Class created successfully!');
-            header('Location: class.php?id=' . $class_id);
-            exit();
-        } else {
-            $error = 'Failed to create class. Please try again.';
-        }
-    }
-}
+    require "../views/components/header.php";
 ?>
-<!DOCTYPE html>
-<html lang="en" data-theme="<?php echo $_SESSION['dark_theme'] ? 'dark' : 'light'; ?>">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Izveidot kursu</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-
-                <nav class="nav-menu">
-                    <a href="dashboard.php" class="nav-link">Sākums</a>
-                    <a href="classes.php" class="nav-link">Mani kursi</a>
-                    <a href="create_class.php" class="nav-link active">Izveidot kursu</a>
-                </nav>
-
-                <div class="user-menu">
-                    <button class="theme-toggle" title="Toggle theme">
-                        <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
-                    </button>
-                    
-                    <div style="position: relative;">
-                        <img src="<?php echo $current_user['profile_picture'] ?: 'assets/images/default-avatar.png'; ?>" 
-                             alt="Profile" class="user-avatar" onclick="toggleUserMenu()">
-                        
-                        <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
-                            <a href="profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                Profils
-                            </a>
-                            <a href="settings.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">
-                                Iest
-                            </a>
-                            <a href="logout.php" style="display: block; padding: 12px 16px; color: var(--danger-color); text-decoration: none;">
-                                Iziet
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
 
     <main class="main-content">
         <div class="container">
@@ -122,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </main>
 
-    <script src="assets/js/script.js"></script>
+    <script src="../../../../../../../assets/js/script.js"></script>
     <script>
         // Form validation
         const validator = new FormValidator('createClassForm');

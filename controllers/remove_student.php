@@ -1,5 +1,5 @@
 <?php
-require_once '../includes/functions.php';
+require_once '../functions.php';
 
 if (!$user->isAuthenticated()) {
     http_response_code(401);

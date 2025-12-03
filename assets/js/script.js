@@ -19,12 +19,12 @@ class ThemeManager {
         const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
         this.applyTheme(newTheme);
         
-        fetch('db/toggle_theme.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+        fetch('/controllers/toggle_theme.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    }
+})
         .then(response => response.json())
         .then(data => {
             console.log('Theme updated on server');
@@ -468,6 +468,7 @@ function handleAjaxForm(form) {
         console.error('Error:', error);
     });
 }
+
 
 // Export for global access
 window.utils = utils;
