@@ -3,6 +3,6 @@ require_once 'includes/functions.php';
 
 $user->logout();
 setFlashMessage('success', 'You have been logged out successfully.');
-header('Location: login.php');
+header('Location: index.php');
 exit();
 ?>

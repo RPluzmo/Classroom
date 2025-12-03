@@ -54,24 +54,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en" data-theme="<?php echo $_SESSION['dark_theme'] ? 'dark' : 'light'; ?>">
+<html lang="en" data-theme="<?php echo ($_SESSION['dark_theme'] ?? false) ? 'dark' : 'light'; ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Classroom Clone</title>
+    <title>Loginc</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body>
-    <div class="login-container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));">
-        <div class="card" style="max-width: 450px; width: 100%; margin: 20px;">
-            <div class="text-center mb-4">
-                <div class="logo" style="justify-content: center; margin-bottom: 20px;">
-                    <div class="logo-icon">📚</div>
-                    <span>Classroom</span>
+<header class="header">
+        <div class="container">
+            <div class="header-content">
+
+                <div class="user-menu">
+                    <button class="theme-toggle" title="Toggle theme">
+                        <?php echo $_SESSION['dark_theme'] ? '☀️' : '🌙'; ?>
+                    </button>
+                    
                 </div>
-                <h1 style="font-size: 28px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">Welcome Back</h1>
-                <p style="color: var(--text-secondary); font-size: 16px;">Sign in to your account</p>
             </div>
+        </div>
+    </header>
+<body>
+    <div class="login-container" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <div class="card" style="max-width: 400px; width: 100%; margin: 20px;">
+            
 
             <?php if ($error): ?>
                 <div class="alert alert-error">
@@ -87,42 +93,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form method="POST" class="login-form">
                 <div class="form-group">
-                    <label for="username" class="form-label">Username or Email</label>
+                    <label for="username" class="form-label">Lietotājvārds</label>
                     <input type="text" id="username" name="username" class="form-control" 
                            value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>" 
                            required autofocus>
                 </div>
 
                 <div class="form-group">
-                    <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" required>
+                    <label for="password" class="form-label">Parole</label>
+                    <input type="text" id="password" name="password" class="form-control" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 24px;">
-                    Sign In
+                    Ienākt
                 </button>
             </form>
 
             <div style="text-align: center; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);">
-                <p style="color: var(--text-secondary); margin-bottom: 16px;">Demo Accounts (Plain Text Passwords)</p>
                 <div style="display: grid; gap: 8px; font-size: 14px;">
                     <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px;">
-                        <strong>Admin:</strong> admin / admin123
+                         admin / qwe
                     </div>
                     <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px;">
-                        <strong>Teacher:</strong> teacher / teacher123
+                        teacher / qwe
                     </div>
                     <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px;">
-                        <strong>Student:</strong> student / student123
+                        student / qwe
                     </div>
-                    
                 </div>
-                
-                
+            </div>
 
             <div style="text-align: center; margin-top: 24px;">
                 <p style="color: var(--text-secondary);">
-                    Don't have an account? 
+                    Vai nēsi reģistrējies?? 
                     <a href="register.php" style="color: var(--primary-color); text-decoration: none;">Sign up</a>
                 </p>
             </div>

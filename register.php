@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div style="text-align: center; margin-top: 20px;">
             <p style="color: var(--text-secondary);">
-                Jau ir lietotājprofils? <a href="login.php" style="color: var(--primary-color);">Pieslēgties</a>
+                Varbūt jums jau ir lietotājprofils? <a href="index.php" style="color: var(--primary-color);">Pieslēgties</a>
             </p>
         </div>
     </div>

@@ -3,7 +3,7 @@ class Database {
     private $host = 'localhost';
     private $db_name = 'classroom_clone';
     private $username = 'root';
-    private $password = 'root';
+    private $password = '';
     private $conn;
 
     public function connect() {
