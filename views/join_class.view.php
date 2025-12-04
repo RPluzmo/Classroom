@@ -27,70 +27,27 @@
 
                     <form method="POST" id="joinClassForm">
                         <div class="form-group">
-                            <label for="class_code" class="form-label">Class Code *</label>
+                            <label for="class_code" class="form-label">KODS</label>
                             <input type="text" id="class_code" name="class_code" class="form-control" 
                                    value="<?php echo isset($_POST['class_code']) ? htmlspecialchars($_POST['class_code']) : (isset($_GET['code']) ? htmlspecialchars($_GET['code']) : ''); ?>" 
                                    required maxlength="10" 
                                    style="text-transform: uppercase; font-size: 18px; text-align: center; letter-spacing: 2px; font-weight: 600;"
                                    placeholder="ABC123">
-                            <small style="color: var(--text-tertiary); font-size: 12px;">
-                                Enter the 6-character class code
-                            </small>
-                        </div>
-
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-                            <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--text-primary);">
-                                🔍 How to get a class code?
-                            </h3>
-                            <ul style="margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
-                                <li>Ask your teacher for the class code</li>
-                                <li>Scan the QR code provided by your teacher</li>
-                                <li>Check your email for an invitation with the code</li>
-                                <li>Look for the code on classroom materials or syllabus</li>
-                            </ul>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
-                            <span>🚀</span> Join Class
+                            Pievienoties kursam
                         </button>
                     </form>
                 </div>
 
-                <!-- QR Scanner Section -->
-                <div class="card" style="margin-top: 20px;">
-                    <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--text-primary);">
-                        📱 Alternative Ways to Join
-                    </h3>
-                    <div class="grid grid-cols-2" style="gap: 16px;">
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; text-align: center;">
-                            <div style="font-size: 32px; margin-bottom: 12px;">📷</div>
-                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary-color);">
-                                Scan QR Code
-                            </h4>
-                            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-                                Scan your teacher's QR code to automatically join the class
-                            </p>
-                        </div>
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; text-align: center;">
-                            <div style="font-size: 32px; margin-bottom: 12px;">🔗</div>
-                            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--primary-color);">
-                                Direct Link
-                            </h4>
-                            <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.4;">
-                                Click on the invitation link sent by your teacher
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Recent Classes Preview -->
                 <?php 
                 $recent_classes = $classroom->getStudentClasses($current_user['id']);
                 if (!empty($recent_classes)): 
                 ?>
                     <div class="card" style="margin-top: 20px;">
                         <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--text-primary);">
-                            📚 My Classes
+                            Mani Kursi
                         </h3>
                         <div class="grid grid-cols-2" style="gap: 12px;">
                             <?php foreach (array_slice($recent_classes, 0, 4) as $class): ?>
@@ -122,10 +79,10 @@
         // Form validation
         const validator = new FormValidator('joinClassForm');
         validator.addRule('class_code', [
-            { type: 'required', message: 'Class code is required' },
-            { type: 'minLength', value: 6, message: 'Class code must be at least 6 characters' },
-            { type: 'maxLength', value: 10, message: 'Class code must not exceed 10 characters' },
-            { type: 'pattern', value: '^[A-Z0-9]+$', message: 'Class code can only contain letters and numbers' }
+            { type: 'required', message: 'Tu aizmirsi kodu' },
+            { type: 'minLength', value: 6, message: 'Kods sastāv no 6 simboliem.. nopietni' },
+            { type: 'maxLength', value: 10, message: 'Par tādu kodu nemaz neiedomājos.. 6 simboli MAX' },
+            { type: 'pattern', value: '^[A-Z0-9]+$', message: 'Tikai burti un cipari' }
         ]);
 
         // Auto-format class code

@@ -32,15 +32,6 @@
                                       rows="4" maxlength="500"><?php echo isset($_POST['description']) ? htmlspecialchars($_POST['description']) : ''; ?></textarea>
                         </div>
 
-                        <div style="background: var(--bg-secondary); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
-                            <ul style="margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
-                                <li>A unique class code will be generated automatically</li>
-                                <li>Students can join using this code or QR code</li>
-                                <li>You can create assignments and share materials</li>
-                                <li>Track student progress and grade submissions</li>
-                            </ul>
-                        </div>
-
                         <div style="display: flex; gap: 12px;">
                             <button type="submit" class="btn btn-primary" style="flex: 1;">
                                 <span>✨</span> Izveidot kursu
@@ -60,9 +51,9 @@
         // Form validation
         const validator = new FormValidator('createClassForm');
         validator.addRule('name', [
-            { type: 'required', message: 'Class name is required' },
-            { type: 'minLength', value: 3, message: 'Class name must be at least 3 characters' },
-            { type: 'maxLength', value: 100, message: 'Class name must not exceed 100 characters' }
+            { type: 'required', message: 'Nepieciešams nosaukums' },
+            { type: 'minLength', value: 3, message: 'Kursa nosaukumam jāsastāv vismaz no 3 simboliem.' },
+            { type: 'maxLength', value: 100, message: 'Kursa nosaukums nevar pārsniegt 100 simbolus.' }
         ]);
 
         // Character counter

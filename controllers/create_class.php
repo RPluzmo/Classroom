@@ -11,15 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = sanitize($_POST['description'] ?? '');
     
     if (empty($name)) {
-        $error = 'Class name is required';
+        $error = 'Nepieciešams nosaukums.';
     } else {
         $class_id = $classroom->createClass($current_user['id'], $name, $description);
         if ($class_id) {
-            setFlashMessage('success', 'Class created successfully!');
+            setFlashMessage('success', 'Kurss veiksmīgi izveidots.');
             header('Location: class.php?id=' . $class_id);
             exit();
         } else {
-            $error = 'Failed to create class. Please try again.';
+            $error = 'Neizdevās izveidot kursu.';
         }
     }
 }

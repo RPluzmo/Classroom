@@ -23,13 +23,13 @@
                         <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
                             <?php if ($current_user['role'] === 'teacher'): ?>
                                 <button onclick="showQRCode()" class="btn btn-secondary">
-                                    <span>📱</span> Show QR Code
+                                    <span>📱</span> Rādīt QR kodu.
                                 </button>
                                 <button onclick="copyClassCode()" class="btn btn-secondary copy-btn" data-copy="<?php echo htmlspecialchars($class['class_code']); ?>">
-                                    <span>📋</span> Copy Code
+                                    <span>📋</span> Kopēt kursa kodu.
                                 </button>
-                                <a href="teacher/create_assignment.php?class_id=<?php echo $class_id; ?>" class="btn btn-primary">
-                                    <span>➕</span> Create Assignment
+                                <a href="../controllers/create_assignment.php?class_id=<?php echo $class_id; ?>" class="btn btn-primary">
+                                    <span>➕</span> Izveidot uzdevumu.
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -40,13 +40,13 @@
                             <div style="font-size: 24px; font-weight: 600; color: var(--primary-color);">
                                 <?php echo count($class_members); ?>
                             </div>
-                            <div style="color: var(--text-secondary); font-size: 14px;">Students</div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">Skolnieki</div>
                         </div>
                         <div>
                             <div style="font-size: 24px; font-weight: 600; color: var(--secondary-color);">
                                 <?php echo count($assignments); ?>
                             </div>
-                            <div style="color: var(--text-secondary); font-size: 14px;">Assignments</div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">Uzdevumi</div>
                         </div>
                         <div>
                             <div style="font-size: 24px; font-weight: 600; color: var(--warning-color);">
@@ -65,7 +65,7 @@
                                 echo $pending_count;
                                 ?>
                             </div>
-                            <div style="color: var(--text-secondary); font-size: 14px;">Pending</div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">Gaida vērtējumu</div>
                         </div>
                     </div>
                 </div>
@@ -76,10 +76,10 @@
                         <!-- Assignments Section -->
                         <div class="card">
                             <div class="card-header">
-                                <h2 style="font-size: 20px; font-weight: 600;">Assignments</h2>
+                                <h2 style="font-size: 20px; font-weight: 600;">Uzdevumi</h2>
                                 <?php if ($current_user['role'] === 'teacher'): ?>
                                     <a href="create_assignment.php?class_id=<?php echo $class_id; ?>" class="btn btn-primary btn-sm">
-                                        <span>➕</span> Create
+                                        <span>➕</span> Izveidot
                                     </a>
                                 <?php endif; ?>
                             </div>
@@ -87,14 +87,7 @@
                             <?php if (empty($assignments)): ?>
                                 <div style="text-align: center; padding: 40px;">
                                     <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
-                                    <h3 style="color: var(--text-primary); margin-bottom: 8px;">No assignments yet</h3>
-                                    <p style="color: var(--text-secondary);">
-                                        <?php if ($current_user['role'] === 'teacher'): ?>
-                                            Create your first assignment to get started
-                                        <?php else: ?>
-                                            Your teacher will add assignments here soon
-                                        <?php endif; ?>
-                                    </p>
+                                    <h3 style="color: var(--text-primary); margin-bottom: 8px;">Nav neviena uzdevuma</h3>
                                 </div>
                             <?php else: ?>
                                 <?php foreach ($assignments as $assign): ?>
@@ -119,25 +112,25 @@
                                                 <?php if ($current_user['role'] === 'student'): ?>
                                                     <?php if ($submission): ?>
                                                         <?php if ($submission['grade'] !== null): ?>
-                                                            <span class="assignment-status status-graded">Grade: <?php echo $submission['grade']; ?>/<?php echo $assign['max_points']; ?></span>
+                                                            <span class="assignment-status status-graded">Atzīme: <?php echo $submission['grade']; ?>/<?php echo $assign['max_points']; ?></span>
                                                         <?php else: ?>
-                                                            <span class="assignment-status status-submitted">Submitted</span>
+                                                            <span class="assignment-status status-submitted">Iesniegti</span>
                                                         <?php endif; ?>
                                                     <?php else: ?>
-                                                        <span class="assignment-status status-pending">Not submitted</span>
+                                                        <span class="assignment-status status-pending">Nav iesniegti</span>
                                                     <?php endif; ?>
                                                 <?php else: ?>
                                                     <span style="color: var(--text-secondary); font-size: 14px;">
-                                                        <?php echo $assign['submission_count']; ?>/<?php echo count($class_members); ?> submitted
+                                                        <?php echo $assign['submission_count']; ?>/<?php echo count($class_members); ?> Iesnieguši
                                                     </span>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
                                         <div class="assignment-meta" style="margin-top: 12px;">
-                                            <span>📅 Due: <?php echo $assign['due_date'] ? date('M j, Y g:i A', strtotime($assign['due_date'])) : 'No due date'; ?></span>
-                                            <span>💯 Max points: <?php echo $assign['max_points']; ?></span>
+                                            <span>📅 Līdz: <?php echo $assign['due_date'] ? date('M j, Y g:i A', strtotime($assign['due_date'])) : 'No due date'; ?></span>
+                                            <span>💯 Maksimālie punkti: <?php echo $assign['max_points']; ?></span>
                                             <?php if ($current_user['role'] === 'teacher' && $assign['submission_count'] > 0): ?>
-                                                <span>✅ Graded: <?php echo $assign['graded_count']; ?></span>
+                                                <span>✅ Novērtēts: <?php echo $assign['graded_count']; ?></span>
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -153,7 +146,7 @@
                             <div class="card" style="margin-bottom: 20px;">
                                 <h3 style="font-size: 16px; margin-bottom: 12px;">Class Information</h3>
                                 <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Class Code</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Kursa kods</div>
                                     <div style="font-size: 20px; font-weight: 600; color: var(--primary-color); letter-spacing: 2px;">
                                         <?php echo htmlspecialchars($class['class_code']); ?>
                                     </div>
@@ -196,74 +189,52 @@
                                     <?php if ($current_user['role'] === 'teacher' && count($class_members) > 10): ?>
                                         <div style="text-align: center; margin-top: 12px;">
                                             <a href="class_members.php?id=<?php echo $class_id; ?>" class="btn btn-secondary btn-sm">
-                                                View All Members
+                                                Apskatīt visus skolniekus
                                             </a>
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
-
-
-                        <div class="card" style="margin-top: 20px;">
-                            <h3 style="font-size: 16px; margin-bottom: 12px;">Quick Actions</h3>
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                <?php if ($current_user['role'] === 'teacher'): ?>
-                                    <a href="create_assignment.php?class_id=<?php echo $class_id; ?>" class="btn btn-secondary" style="justify-content: center;">
-                                        <span>➕</span> Create Assignment
-                                    </a>
-                                    <button onclick="showQRCode()" class="btn btn-secondary" style="justify-content: center;">
-                                        <span>📱</span> Show QR Code
-                                    </button>
-                                <?php else: ?>
-                                    <a href="profile.php" class="btn btn-secondary" style="justify-content: center;">
-                                        <span>👤</span> My Profile
-                                    </a>
-                                <?php endif; ?>
-                                <a href="dashboard.php" class="btn btn-secondary" style="justify-content: center;">
-                                   
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- QR Code Modal -->
     <div id="qrModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Join Class</h2>
-                <button class="modal-close" onclick="modalManager.close('qrModal')">×</button>
-            </div>
-            <div class="qr-code-container">
-                <div style="text-align: center;">
-                    <div style="font-size: 48px; margin-bottom: 16px;">📱</div>
-                    <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                        Students can scan this QR code or use the class code below to join
-                    </p>
-                    <div style="background: white; padding: 20px; border-radius: 8px; display: inline-block; margin-bottom: 16px;">
-                        <code style="font-size: 24px; font-weight: bold; color: var(--primary-color); letter-spacing: 2px;">
-                            <?php echo htmlspecialchars($class['class_code']); ?>
-                        </code>
-                    </div>
-                    <div>
-                        <button onclick="copyClassCode()" class="btn btn-primary copy-btn" data-copy="<?php echo htmlspecialchars($class['class_code']); ?>">
-                            <span>📋</span> Copy Code
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Pievienoties kursam</h2>
+            <button class="modal-close" onclick="closeQRCodeModal()">×</button>
+        </div>
+        <div class="qr-code-container" style="text-align:center; padding:20px;">
+            <canvas id="qrCodeCanvas"></canvas>
+            <p style="margin-top:12px; color: var(--text-secondary);">
+               Tas vnk parāda kursa kodu
+            </p>
         </div>
     </div>
-
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <script src="../../../../../../assets/js/script.js"></script>
     <script>
         function showQRCode() {
-            QRCodeManager.generateClassCodeModal('<?php echo htmlspecialchars($class['class_code']); ?>', '<?php echo htmlspecialchars($class['name']); ?>');
-        }
+    const classCode = '<?php echo htmlspecialchars($class['class_code']); ?>';
+    const url = window.location.origin + '/join_class.php?code=' + classCode;
+
+    const canvas = document.getElementById('qrCodeCanvas');
+
+    QRCode.toCanvas(canvas, url, { width: 200, margin: 2 }, function (error) {
+        if (error) console.error(error);
+    });
+
+    document.getElementById('qrModal').style.display = 'block';
+}
+
+function closeQRCodeModal() {
+    document.getElementById('qrModal').style.display = 'none';
+}
 
         function copyClassCode() {
             const code = '<?php echo htmlspecialchars($class['class_code']); ?>';
@@ -271,10 +242,10 @@
         }
 
         function removeStudent(studentId) {
-            utils.confirmAction('Are you sure you want to remove this student from the class?', () => {
-                window.location.href = 'class.view.php?class_id=<?php echo $class_id; ?>&student_id=' + studentId;
-            });
-        }
+    utils.confirmAction('Vai esat pārliecināts, ka vēlaties noņemt šo skolnieku?', () => {
+        window.location.href = 'class.php?id=<?php echo $class_id; ?>&student_id=' + studentId;
+    });
+}
 
         function toggleUserMenu() {
             const menu = document.getElementById('userMenu');

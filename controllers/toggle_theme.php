@@ -1,7 +1,7 @@
 <?php
 require_once '../functions.php';
 
-header('Content-Type: application/json'); // Pārliecinieties, ka šī rinda ir klāt!
+header('Content-Type: application/json');
 
 if (!$user->isAuthenticated()) {
     http_response_code(401);
@@ -17,6 +17,6 @@ echo json_encode([
     'success' => true,
     'dark_theme' => $new_theme_state, 
     'new_theme_name' => $new_theme_state ? 'dark' : 'light',
-    'message' => 'Theme updated successfully'
+    'message' => 'Team balts vai Team menls aah'
 ]);
 ?>

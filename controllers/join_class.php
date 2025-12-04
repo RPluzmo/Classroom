@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: dashboard.php');
             exit();
         } else {
-            $error = 'Invalid class code or you are already enrolled in this class';
+            $error = 'Nepareizs kursa kods vai jau esi pievienojies šim kursam. viens no abiem';
         }
     }
 }
@@ -26,11 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['code']) && !empty($_GET['code'])) {
     $class_code = sanitize($_GET['code']);
     if ($classroom->joinClass($current_user['id'], $class_code)) {
-        setFlashMessage('success', 'Successfully joined the class!');
+        setFlashMessage('success', 'Esat pievienojies');
         header('Location: dashboard.php');
         exit();
     } else {
-        $error = 'Invalid class code or you are already enrolled in this class';
+        $error = 'Nepareizs kursa kods vai jau esi pievienojies šim kursam. viens no abiem';
     }
 }
 

@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } else {
-            $error = 'Izvēlieties 1 failu ko iestatīt par savu profila attēlu';
+            $error = 'Izvēlieties 1 failu kā savu profila attēlu';
         }
     }
 }

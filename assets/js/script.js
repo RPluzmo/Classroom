@@ -213,13 +213,12 @@ class QRCodeManager {
             classNameElement.textContent = className;
         }
 
-        // Generate QR code (simplified - in production, use a proper QR library)
         if (qrContainer) {
             qrContainer.innerHTML = `
                 <div style="text-align: center;">
                     <div style="font-size: 48px; margin-bottom: 16px;">📱</div>
                     <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                        Scan this QR code or use the class code to join
+                        QR itkā sastāv no kursa koda...yeh idk
                     </p>
                     <div style="background: white; padding: 20px; border-radius: 8px; display: inline-block;">
                         <code style="font-size: 24px; font-weight: bold; color: var(--primary-color);">${classCode}</code>
@@ -351,10 +350,10 @@ const utils = {
         const hours = Math.floor(diff / 3600000);
         const days = Math.floor(diff / 86400000);
 
-        if (minutes < 1) return 'Just now';
-        if (minutes < 60) return `${minutes} minutes ago`;
-        if (hours < 24) return `${hours} hours ago`;
-        if (days < 7) return `${days} days ago`;
+        if (minutes < 1) return 'Tiko';
+        if (minutes < 60) return `${minutes} pirms pāris minūtēm`;
+        if (hours < 24) return `${hours} Pirms pāris stundām`;
+        if (days < 7) return `${days} Pirs vairākām dienām`;
         
         return date.toLocaleDateString();
     },
@@ -362,9 +361,9 @@ const utils = {
     // Copy to clipboard
     copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
-            this.showNotification('Copied to clipboard!', 'success');
+            this.showNotification('Kopēts', 'success');
         }).catch(() => {
-            this.showNotification('Failed to copy', 'error');
+            this.showNotification('', 'error');
         });
     },
 
@@ -421,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Setup delete confirmations
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', (e) => {
-            const message = button.getAttribute('data-confirm') || 'Are you sure you want to delete this item?';
+            const message = button.getAttribute('data-confirm') || 'Vai tiešām vēlaties dzēst?';
             utils.confirmAction(message, () => {
                 window.location.href = button.getAttribute('data-href');
             });
@@ -447,7 +446,7 @@ function handleAjaxForm(form) {
         utils.hideLoading(submitBtn, originalText);
 
         if (data.success) {
-            utils.showNotification(data.message || 'Success!', 'success');
+            utils.showNotification(data.message || 'Ok!', 'success');
             
             if (data.redirect) {
                 setTimeout(() => {
@@ -459,12 +458,12 @@ function handleAjaxForm(form) {
                 }, 1500);
             }
         } else {
-            utils.showNotification(data.message || 'Something went wrong', 'error');
+            utils.showNotification(data.message || 'Kautkas nesanāca', 'error');
         }
     })
     .catch(error => {
         utils.hideLoading(submitBtn, originalText);
-        utils.showNotification('Network error. Please try again.', 'error');
+        utils.showNotification('nē', 'error');
         console.error('Error:', error);
     });
 }

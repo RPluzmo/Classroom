@@ -19,12 +19,12 @@ require "../views/components/header.php";
     }
 
     .history-table tbody tr:hover {
-        background: var(--bg-hover);
+        background: var(--bg-tertiary);
         transition: 0.15s ease;
     }
 
     .history-meta {
-        color: var(--text-muted);
+        color: var(--text-secondary);
         font-size: 14px;
         margin-top: -8px;
         margin-bottom: 15px;
@@ -40,13 +40,47 @@ require "../views/components/header.php";
         color: var(--text-primary);
         font-weight: 600;
     }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .history-card {
+            padding: 12px;
+        }
+        .history-table {
+            display: block;
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .history-table thead {
+            display: none;
+        }
+        .history-table tbody tr {
+            display: block;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+            background-color: var(--bg-primary);
+        }
+        .history-table tbody td {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 8px;
+            font-size: 13px;
+        }
+        .history-table tbody td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--text-secondary);
+            flex: 1;
+        }
+    }
 </style>
 
 <div class="container">
     <div class="history-card">
         <h2 style="margin-bottom: 5px;">Darbību vēsture</h2>
-        <p class="history-meta">Šeit redzamas visas lietotāju veiktās sistēmas darbības.</p>
-
         <div class="table-responsive">
             <table class="table history-table table-bordered">
                 <thead>
@@ -64,22 +98,18 @@ require "../views/components/header.php";
                 <?php if (!empty($history)): ?>
                     <?php foreach ($history as $h): ?>
                         <tr>
-                            <td><?= $h['id'] ?></td>
-
-                            <td>
+                            <td data-label="#"> <?= $h['id'] ?></td>
+                            <td data-label="Lietotājs">
                                 <?= htmlspecialchars($h['username']) ?><br>
                                 <span class="text-muted">
                                     <?= htmlspecialchars($h['first_name'] . ' ' . $h['last_name']) ?>
                                 </span>
                             </td>
-
-                            <td><strong><?= htmlspecialchars($h['action_type']) ?></strong></td>
-
-                            <td class="log-description">
+                            <td data-label="Darbības tips"><strong><?= htmlspecialchars($h['action_type']) ?></strong></td>
+                            <td data-label="Apraksts" class="log-description">
                                 <?= nl2br(htmlspecialchars($h['action_description'])) ?>
                             </td>
-
-                            <td>
+                            <td data-label="Mērķis">
                                 <?php if ($h['target_type']): ?>
                                     <span class="log-target">
                                         <?= htmlspecialchars($h['target_type']) ?>
@@ -89,8 +119,7 @@ require "../views/components/header.php";
                                     <span class="text-muted">—</span>
                                 <?php endif; ?>
                             </td>
-
-                            <td>
+                            <td data-label="Datums">
                                 <span class="text-muted" style="font-size: 13px;">
                                     <?= date("Y-m-d H:i", strtotime($h['created_at'])) ?>
                                 </span>
@@ -120,7 +149,6 @@ require "../views/components/header.php";
     document.addEventListener('click', function(event) {
         const menu = document.getElementById('userMenu');
         const avatar = document.querySelector('.user-avatar');
-
         if (!avatar.contains(event.target) && !menu.contains(event.target)) {
             menu.classList.add('d-none');
         }

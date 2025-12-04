@@ -10,7 +10,7 @@ if (!$assignment_id) {
 
 $assignment_data = $assignment->getAssignmentById($assignment_id);
 if (!$assignment_data) {
-    setFlashMessage('error', 'Assignment not found');
+    setFlashMessage('error', 'Uzdevums nav atrasts.');
     header('Location: dashboard.php');
     exit();
 }
@@ -20,7 +20,7 @@ $class = $classroom->getClassById($assignment_data['class_id']);
 
 // Check permissions
 if ($current_user['role'] === 'teacher' && $class['teacher_id'] != $current_user['id']) {
-    setFlashMessage('error', 'You do not have permission to view this assignment');
+    setFlashMessage('error', 'Jums nav piekļuves šim uzdevumam.');
     header('Location: dashboard.php');
     exit();
 } elseif ($current_user['role'] === 'student') {
@@ -29,7 +29,7 @@ if ($current_user['role'] === 'teacher' && $class['teacher_id'] != $current_user
     $stmt = $conn->prepare("SELECT id FROM class_members WHERE class_id = ? AND student_id = ?");
     $stmt->execute([$assignment_data['class_id'], $current_user['id']]);
     if (!$stmt->fetch()) {
-        setFlashMessage('error', 'You are not enrolled in this class');
+        setFlashMessage('error', 'Jums nav piekļuves šim uzdevumam.');
         header('Location: dashboard.php');
         exit();
     }
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $submission_id = $assignment->submitAssignment($assignment_id, $current_user['id'], $files);
         if ($submission_id) {
-            setFlashMessage('success', 'Assignment submitted successfully!');
+            setFlashMessage('success', 'Uzdevums iesniegts.');
             header('Location: assignment.php?id=' . $assignment_id);
             exit();
         }
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $feedback = sanitize($_POST['feedback'] ?? '');
         
         if ($assignment->gradeSubmission($current_user['id'], $submission_id, $grade, $feedback)) {
-            setFlashMessage('success', 'Grade submitted successfully!');
+            setFlashMessage('success', 'Uzdevums novērtēts.');
             header('Location: assignment.php?id=' . $assignment_id);
             exit();
         }
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($comment_text)) {
         $sub_id = $submission['id'] ?? null;
         $comment->addComment($current_user['id'], $comment_text, $assignment_id, $sub_id);
-        setFlashMessage('success', 'Comment added!');
+        setFlashMessage('success', 'Kommentārs pievienots.');
         header('Location: assignment.php?id=' . $assignment_id);
         exit();
     }

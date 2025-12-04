@@ -58,7 +58,7 @@
                     <div class="card-header">
                         <div>
                             <h1 class="card-title">Skolotāju skats</h1>
-                           <h2>Sveiks/a <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
+                           <h2>Čau <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
                         </div>
                         <a href="../controllers/create_class.php" class="btn btn-primary">
                             <span>➕</span> Pievienot kursu
@@ -80,7 +80,7 @@
                                         <div class="class-header"></div>
                                         <div class="class-info">
                                             <h3 class="class-name"><?php echo htmlspecialchars($class['name']); ?></h3>
-                                            <p class="class-teacher"><?php echo $class['student_count']; ?> students</p>
+                                            <p class="class-teacher"><?php echo $class['student_count']; ?> skolnieki</p>
                                             <span class="class-code"><?php echo htmlspecialchars($class['class_code']); ?></span>
                                         </div>
                                     </div>
@@ -91,14 +91,14 @@
 
                     <?php if (!empty($user_assignments)): ?>
                         <div class="card">
-                            <h2 style="font-size: 18px; margin-bottom: 16px;">Recent Assignments</h2>
+                            <h2 style="font-size: 18px; margin-bottom: 16px;">Jaunākie uzdevimu</h2>
                             <?php foreach ($user_assignments as $assign): ?>
                                 <div class="assignment-card">
                                     <h3 class="assignment-title"><?php echo htmlspecialchars($assign['title']); ?></h3>
                                     <div class="assignment-meta">
-                                        <span>📁 <?php echo htmlspecialchars($assign['title']); // This should be class name ?></span>
+                                        <span>📁 <?php echo htmlspecialchars($assign['title']);?></span>
                                         <span>📅 <?php echo $assign['due_date'] ? date('M j, Y', strtotime($assign['due_date'])) : 'No due date'; ?></span>
-                                        <span>✅ <?php echo $assign['graded_count']; ?>/<?php echo $assign['submission_count']; ?> graded</span>
+                                        <span>✅ <?php echo $assign['graded_count']; ?>/<?php echo $assign['submission_count']; ?> Novērtēti</span>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -115,7 +115,7 @@
                         
                         <div>
                             <h1 class="card-title">Skolnieka skats</h1>
-                            <h2>Chaw <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
+                            <h2>Čau <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
                         </div>
                         <a href="../controllers/join_class.php" class="btn btn-primary">
                             <span>➕</span> Pievienoties kursam
@@ -146,7 +146,7 @@
 
                     <?php if (!empty($user_assignments)): ?>
                         <div class="card">
-                            <h2 style="font-size: 18px; margin-bottom: 16px;">Recent Assignments</h2>
+                            <h2 style="font-size: 18px; margin-bottom: 16px;">Jaunākie iesniegumu</h2>
                             <?php foreach ($user_assignments as $assign): ?>
                                 <div class="assignment-card">
                                     <h3 class="assignment-title"><?php echo htmlspecialchars($assign['title']); ?></h3>
@@ -157,10 +157,10 @@
                                             <?php if ($assign['submission']['grade'] !== null): ?>
                                                 <span class="assignment-status status-graded">Grade: <?php echo $assign['submission']['grade']; ?></span>
                                             <?php else: ?>
-                                                <span class="assignment-status status-submitted">Submitted</span>
+                                                <span class="assignment-status status-submitted">Iesniegts</span>
                                             <?php endif; ?>
                                         <?php else: ?>
-                                            <span class="assignment-status status-pending">Pending</span>
+                                            <span class="assignment-status status-pending">Gaida</span>
                                         <?php endif; ?>
                                     </div>
                                 </div>

@@ -27,11 +27,11 @@ if (!$class || $class['teacher_id'] != $current_user['id']) {
 }
 
 if ($classroom->removeStudent($current_user['id'], $class_id, $student_id)) {
-    setFlashMessage('success', 'Student removed successfully.');
+    setFlashMessage('success', 'Skolnieks veiksmīgi noņemts.');
     header('Location: ../class.php?id=' . $class_id);
     exit();
 } else {
-    setFlashMessage('error', 'Failed to remove student.');
+    setFlashMessage('error', 'Neizdevās noņemt skolnieku.');
     header('Location: ../class.php?id=' . $class_id);
     exit();
 }

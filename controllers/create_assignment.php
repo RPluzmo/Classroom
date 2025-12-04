@@ -10,7 +10,7 @@ if (!$class_id) {
 
 $class = $classroom->getClassById($class_id);
 if (!$class || $class['teacher_id'] != $user->getCurrentUser()['id']) {
-    setFlashMessage('error', 'Class not found or access denied');
+    setFlashMessage('error', 'Kurss netika atrasts');
     header('Location: dashboard.php');
     exit();
 }
@@ -50,11 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             
-            setFlashMessage('success', 'Assignment created successfully!');
+            setFlashMessage('success', 'Uzdevums veiksmīgi izveidots.');
             header('Location: assignment.php?id=' . $assignment_id);
             exit();
         } else {
-            $error = 'Failed to create assignment. Please try again.';
+            $error = 'Neizdevās pievienot uzdevumu.';
         }
     }
 }

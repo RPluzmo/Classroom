@@ -12,7 +12,6 @@ require "../views/components/header.php";
 
     <?php if (empty($user_classes)): ?>
         <div style="text-align: center; padding: 40px;">
-            <div style="font-size: 48px; margin-bottom: 16px;">📚</div>
             <h3 style="color: var(--text-primary); margin-bottom: 8px;">Te nekā nav</h3>
             <p style="color: var(--text-secondary); margin-bottom: 16px;">Šeit parādīsies visi jūsu kursi.</p>
             <a href="teacher/create_class.php" class="btn btn-primary">Pievienot kursu</a>
@@ -27,7 +26,7 @@ require "../views/components/header.php";
                             <?php echo htmlspecialchars($class['name']); ?>
                         </h3>
                         <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 8px;">
-                            <?php echo $class['student_count']; ?> students
+                            <?php echo $class['student_count']; ?> Skolnieki
                         </p>
                         <span style="font-size: 12px; color: var(--text-secondary); background: var(--bg-secondary); padding: 4px 8px; border-radius: 4px;">
                             <?php echo htmlspecialchars($class['class_code']); ?>
@@ -46,7 +45,6 @@ function toggleUserMenu() {
             menu.classList.toggle('d-none');
         }
 
-        // Close menu when clicking outside
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('userMenu');
             const avatar = document.querySelector('.user-avatar');

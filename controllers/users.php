@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     && ($_POST['action'] ?? '') === 'update_role') {
 
     if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
-        setFlashMessage('error', "Nederīgs CSRF marķieris.");
+        setFlashMessage('error', "Nederīgs CSRF marķieris. itkā es zinātu kas tās ir :D");
         header('Location: users.php');
         exit;
     }
@@ -45,15 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 }
 
 
-
-// =======================================================
-// 2) Lietotāja datu (username, email, vārds, uzvārds, parole) atjaunināšana
-// =======================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST'
     && ($_POST['action'] ?? '') === 'admin_update_user') {
 
     if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
-        setFlashMessage('error', "Nederīgs CSRF marķieris.");
+        setFlashMessage('error', "Nederīgs CSRF marķieris.itkā es zinātu kas tās ir :D");
         header('Location: users.php');
         exit;
     }
@@ -83,11 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     exit;
 }
 
-
-
-// =======================================================
-// 3) Dabū visus lietotājus un ielādē skatu
-// =======================================================
 $users = $user->getAllUsers();
 $page_title = "Lietotāju pārvaldība";
 

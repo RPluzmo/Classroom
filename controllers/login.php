@@ -41,14 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     
     if (empty($username) || empty($password)) {
-        $error = 'Please enter both username and password';
+        $error = 'Ievadied gan lietotājvārdu gan paroli';
     } else {
         $login_result = $user->login($username, $password);
         if ($login_result) {
             header('Location: dashboard.php');
             exit();
         } else {
-            $error = 'Invalid username or password';
+            $error = 'Neatbilstošs lietotājvārds vai parole';
         }
     }
 }
