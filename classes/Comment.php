@@ -32,37 +32,36 @@ class Comment {
     }
 }
 
-    public function getAssignmentComments($assignment_id) {
-        try {
-            $stmt = $this->conn->prepare("
-                SELECT c.*, u.first_name, u.last_name, u.username, u.profile_picture 
-                FROM comments c 
-                JOIN users u ON c.user_id = u.id 
-                WHERE c.assignment_id = ? 
-                ORDER BY c.created_at ASC
-            ");
-            $stmt->execute([$assignment_id]);
-            return $stmt->fetchAll();
-        } catch(PDOException $e) {
-            return [];
-        }
+public function getAssignmentComments($assignment_id) {
+    try {
+        $stmt = $this->conn->prepare("
+            SELECT c.*, u.first_name, u.last_name, u.username, u.profile_picture 
+            FROM comments c 
+            LEFT JOIN users u ON c.user_id = u.id 
+            WHERE c.assignment_id = ? 
+            ORDER BY c.created_at ASC
+        ");
+        $stmt->execute([$assignment_id]);
+        return $stmt->fetchAll();
+    } catch(PDOException $e) {
+        return [];
     }
-
+}
     public function getSubmissionComments($submission_id) {
-        try {
-            $stmt = $this->conn->prepare("
-                SELECT c.*, u.first_name, u.last_name, u.username, u.profile_picture 
-                FROM comments c 
-                JOIN users u ON c.user_id = u.id 
-                WHERE c.submission_id = ? 
-                ORDER BY c.created_at ASC
-            ");
-            $stmt->execute([$submission_id]);
-            return $stmt->fetchAll();
-        } catch(PDOException $e) {
-            return [];
-        }
+    try {
+        $stmt = $this->conn->prepare("
+            SELECT c.*, u.first_name, u.last_name, u.username, u.profile_picture 
+            FROM comments c 
+            LEFT JOIN users u ON c.user_id = u.id 
+            WHERE c.submission_id = ? 
+            ORDER BY c.created_at ASC
+        ");
+        $stmt->execute([$submission_id]);
+        return $stmt->fetchAll();
+    } catch(PDOException $e) {
+        return [];
     }
+}
 
     public function updateComment($user_id, $comment_id, $comment_text) {
         try {

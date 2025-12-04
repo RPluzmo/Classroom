@@ -1,67 +1,128 @@
 <?php
-    require "../views/components/header.php";
+require "../views/components/header.php";
 ?>
 
-<div class="container mt-5">
-    <?php echo getFlashMessage('success'); // Pievienojiet Flash ziņojumus ?>
+<style>
+    .history-card {
+        background: var(--bg-primary);
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: var(--shadow-md);
+        margin-top: 25px;
+    }
 
-    <table class="table table-striped table-hover">
-        <thead>
-            <ul>
-                <li>ID</li>
-                <li>Lietotājs (ID)</li>
-                <li>Darbības veids</li>
-                <li>Apraksts</li>
-                <li>Mērķis</li>
-                <li>Laiks</li>
-                <li>IP Adrese</li>
-</ul>
-        </thead>
-        <tbody>
-            <?php if (empty($history_data)): ?>
-                <tr>
-                    <td colspan="7">Darbību vēsture nav atrasta.</td>
-                </tr>
-            <?php else: ?>
-                <?php foreach ($history_data as $action): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($action['id']); ?></td>
-                    <td>
-                        <?php echo htmlspecialchars($action['first_name'] . ' ' . $action['last_name']); ?> 
-                        (<?php echo htmlspecialchars($action['user_id']); ?>)
-                    </td>
-                    <td><strong><?php echo htmlspecialchars($action['action_type']); ?></strong></td>
-                    <td><?php echo htmlspecialchars($action['action_description']); ?></td>
-                    <td>
-                        <?php 
-                            $target = htmlspecialchars($action['target_type'] . ':' . $action['target_id']);
-                            echo !empty($action['target_id']) ? $target : '-';
-                        ?>
-                    </td>
-                    <td><?php echo formatDate($action['created_at']); ?></td>
-                    <td><?php echo htmlspecialchars($action['ip_address']); ?></td>
-                </tr>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </tbody>
-    </table>
+    .history-table thead th {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-weight: 600;
+        padding: 12px;
+    }
+
+    .history-table tbody tr:hover {
+        background: var(--bg-hover);
+        transition: 0.15s ease;
+    }
+
+    .history-meta {
+        color: var(--text-muted);
+        font-size: 14px;
+        margin-top: -8px;
+        margin-bottom: 15px;
+    }
+
+    .log-description {
+        max-width: 350px;
+        white-space: normal;
+        line-height: 1.3em;
+    }
+
+    .log-target {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+</style>
+
+<div class="container">
+    <div class="history-card">
+        <h2 style="margin-bottom: 5px;">Darbību vēsture</h2>
+        <p class="history-meta">Šeit redzamas visas lietotāju veiktās sistēmas darbības.</p>
+
+        <div class="table-responsive">
+            <table class="table history-table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Lietotājs</th>
+                        <th>Darbības tips</th>
+                        <th>Apraksts</th>
+                        <th>Mērķis</th>
+                        <th>Datums</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                <?php if (!empty($history)): ?>
+                    <?php foreach ($history as $h): ?>
+                        <tr>
+                            <td><?= $h['id'] ?></td>
+
+                            <td>
+                                <?= htmlspecialchars($h['username']) ?><br>
+                                <span class="text-muted">
+                                    <?= htmlspecialchars($h['first_name'] . ' ' . $h['last_name']) ?>
+                                </span>
+                            </td>
+
+                            <td><strong><?= htmlspecialchars($h['action_type']) ?></strong></td>
+
+                            <td class="log-description">
+                                <?= nl2br(htmlspecialchars($h['action_description'])) ?>
+                            </td>
+
+                            <td>
+                                <?php if ($h['target_type']): ?>
+                                    <span class="log-target">
+                                        <?= htmlspecialchars($h['target_type']) ?>
+                                        #<?= htmlspecialchars($h['target_id']) ?>
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-muted">—</span>
+                                <?php endif; ?>
+                            </td>
+
+                            <td>
+                                <span class="text-muted" style="font-size: 13px;">
+                                    <?= date("Y-m-d H:i", strtotime($h['created_at'])) ?>
+                                </span>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">
+                            Nav pieejamu darbību ierakstu.
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
 <script src="../../../../../../assets/js/script.js"></script>
-    <script>
-function toggleUserMenu() {
-            const menu = document.getElementById('userMenu');
-            menu.classList.toggle('d-none');
+<script>
+    function toggleUserMenu() {
+        const menu = document.getElementById('userMenu');
+        menu.classList.toggle('d-none');
+    }
+
+    document.addEventListener('click', function(event) {
+        const menu = document.getElementById('userMenu');
+        const avatar = document.querySelector('.user-avatar');
+
+        if (!avatar.contains(event.target) && !menu.contains(event.target)) {
+            menu.classList.add('d-none');
         }
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const menu = document.getElementById('userMenu');
-            const avatar = document.querySelector('.user-avatar');
-            
-            if (!avatar.contains(event.target) && !menu.contains(event.target)) {
-                menu.classList.add('d-none');
-            }
-        });
-    </script>
-<?php include '../../views/components/footer.php'; ?>
-
+    });
+</script>

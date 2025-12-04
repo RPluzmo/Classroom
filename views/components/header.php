@@ -34,18 +34,14 @@ $theme_state = ($_SESSION['dark_theme'] ?? 0) ? 'dark' : 'light';
                     </button>
                     
                     <div style="position: relative;">
-                        <img src="<?php 
-    // Attēla ceļš no datubāzes (jāuzglabā kā /uploads/avatars/...)
-    $image_url = $current_user['profile_picture'];
-
-    // Ja lietotāja attēls nav, izmanto noklusējuma attēlu, 
-    // norādot absolūto ceļu no vietnes saknes (http://localhost/assets/...)
-    if (empty($image_url)) {
-        $image_url = '/assets/images/default-avatar.png'; 
-    }
-    echo $image_url; 
-?>" 
-     alt="piss" class="user-avatar" onclick="toggleUserMenu()">
+                        <img src="<?php
+                            $image_url = $current_user['profile_picture'];
+                            if (empty($image_url)) {
+                                    $image_url = '/assets/images/default-avatar.png'; 
+                            }
+                            echo $image_url; 
+                        ?>" 
+                        alt="piss" class="user-avatar" onclick="toggleUserMenu()">
                         
                         <div id="userMenu" class="d-none" style="position: absolute; right: 0; top: 50px; background: var(--bg-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1001;">
                             <a href="../../../../../controllers/profile.php" style="display: block; padding: 12px 16px; color: var(--text-primary); text-decoration: none; border-bottom: 1px solid var(--border-color);">

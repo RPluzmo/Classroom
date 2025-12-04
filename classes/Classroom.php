@@ -8,6 +8,22 @@ class Classroom {
         $this->conn = $this->db->connect();
     }
 
+public function getClassesByTeacher(int $teacher_id): array {
+    try {
+        $stmt = $this->conn->prepare("
+            SELECT c.*, 
+                   (SELECT COUNT(*) FROM class_members cm WHERE cm.class_id = c.id) AS student_count
+            FROM classes c
+            WHERE c.teacher_id = ?
+            ORDER BY c.created_at DESC
+        ");
+        $stmt->execute([$teacher_id]);
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+
     public function createClass($teacher_id, $name, $description) {
         try {
             $class_code = $this->generateClassCode();

@@ -60,7 +60,7 @@
                             <h1 class="card-title">Skolotāju skats</h1>
                            <h2>Sveiks/a <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
                         </div>
-                        <a href="controllers/teacher/create_class.php" class="btn btn-primary">
+                        <a href="../controllers/create_class.php" class="btn btn-primary">
                             <span>➕</span> Pievienot kursu
                         </a>
                     </div>
@@ -127,7 +127,7 @@
                         <?php if (empty($user_classes)): ?>
                             <div style="text-align: center; padding: 40px;">
                                 <h3 style="color: var(--text-primary); margin-bottom: 8px;">Te nekā nav</h3>
-                                <a href="controllers/student/join_class.php" class="btn btn-primary">Pievienoties kursam</a>
+                                <a href="controllers/join_class.php" class="btn btn-primary">Pievienoties kursam</a>
                             </div>
                         <?php else: ?>
                             <div class="grid grid-cols-3">

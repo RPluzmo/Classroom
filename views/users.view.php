@@ -1,4 +1,6 @@
 <?php
+// views/admin/users.view.php
+
     require "../views/components/header.php";
 ?>
 
@@ -6,96 +8,103 @@
     <h2><?php echo $page_title; ?></h2>
     
     <?php if ($message): ?>
-        <div class="alert alert-success"><?php echo $message; ?></div>
+        <div style="padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 15px; border-radius: 4px;"><?php echo $message; ?></div>
     <?php endif; ?>
     <?php if ($error): ?>
-        <div class="alert alert-danger"><?php echo $error; ?></div>
+        <div style="padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; margin-bottom: 15px; border-radius: 4px;"><?php echo $error; ?></div>
     <?php endif; ?>
 
-    <table class="table table-striped">
+    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; table-layout: fixed;">
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Lietotājvārds</th>
-                <th>Vārds, Uzvārds</th>
-                <th>E-pasts</th>
-                <th>Loma</th>
-                <th>Darbības</th>
+            <tr style="background-color: #777777ff;">
+                <th style="padding: 8px; border: 1px solid #ddd; width: 5%;">ID</th>
+                <th style="padding: 8px; border: 1px solid #ddd; width: 15%;">Lietotājvārds</th>
+                <th style="padding: 8px; border: 1px solid #ddd; width: 15%;">Vārds</th>
+                <th style="padding: 8px; border: 1px solid #ddd; width: 15%;">Uzvārds</th>
+                <th style="padding: 8px; border: 1px solid #ddd; width: 15%;">E-pasts</th>
+                <th style="padding: 8px; border: 1px solid #ddd; width: 12%;">Loma</th>
+                <th style="padding: 8px; border: 1px solid #ddd; width: 15%;">Darbības</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($users as $u): ?>
-            <tr>
-                <td><?php echo htmlspecialchars($u['id']); ?></td>
-                <td><?php echo htmlspecialchars($u['username']); ?></td>
-                <td><?php echo htmlspecialchars($u['first_name'] . ' ' . $u['last_name']); ?></td>
-                <td><?php echo htmlspecialchars($u['email']); ?></td>
-                <td>
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
-                        <input type="hidden" name="action" value="update_role">
-                        <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
-                        
-                        <?php if ($u['id'] == $current_user['id']): ?>
-                            <span class="badge badge-primary"><?php echo getRoleDisplayName($u['role']); ?></span>
-                        <?php else: ?>
-                            <select name="role" class="form-control-sm" onchange="this.form.submit()">
-                                <option value="admin" <?php echo $u['role'] === 'admin' ? 'selected' : ''; ?>>Admin</option>
-                                <option value="teacher" <?php echo $u['role'] === 'teacher' ? 'selected' : ''; ?>>Teacher</option>
-                                <option value="student" <?php echo $u['role'] === 'student' ? 'selected' : ''; ?>>Student</option>
-                            </select>
-                        <?php endif; ?>
-                    </form>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#editUserModal-<?php echo $u['id']; ?>">
-                        Rediģēt
-                    </button>
+            <?php 
+                $default_avatar = '../assets/images/default-avatar.png'; 
 
-                    <div class="modal fade" id="editUserModal-<?php echo $u['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel-<?php echo $u['id']; ?>" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <form method="POST">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editUserModalLabel-<?php echo $u['id']; ?>">Rediģēt lietotāju: <?php echo htmlspecialchars($u['username']); ?></h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
-                                        <input type="hidden" name="action" value="admin_update_user">
-                                        <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
-                                        
-                                        <div class="form-group">
-                                            <label for="first_name_<?php echo $u['id']; ?>">Vārds</label>
-                                            <input type="text" class="form-control" id="first_name_<?php echo $u['id']; ?>" name="first_name" value="<?php echo htmlspecialchars($u['first_name']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="last_name_<?php echo $u['id']; ?>">Uzvārds</label>
-                                            <input type="text" class="form-control" id="last_name_<?php echo $u['id']; ?>" name="last_name" value="<?php echo htmlspecialchars($u['last_name']); ?>" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="password_<?php echo $u['id']; ?>">Jaunā parole (atstājiet tukšu, ja nemaināt)</label>
-                                            <input type="password" class="form-control" id="password_<?php echo $u['id']; ?>" name="password">
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Aizvērt</tbutton>
-                                        <button type="submit" class="btn btn-primary">Saglabāt izmaiņas</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+                foreach ($users as $u): 
+                    // Šeit tiek pielietota jūsu piemērā norādītā attēla loģika
+                   
+                    if (empty($image_url)) {
+                        $image_url = $default_avatar; 
+                    }
+            ?>
+            <tr id="user-row-<?php echo $u['id']; ?>">
+
+    <form id="edit-form-<?php echo $u['id']; ?>" method="POST" style="display: contents;">
+        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+        <input type="hidden" name="action" value="admin_update_user">
+        <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
+
+        <td><?php echo $u['id']; ?></td>
+
+        <td>
+            <span id="username-view-<?php echo $u['id']; ?>"><?php echo htmlspecialchars($u['username']); ?></span>
+            <input type="text" name="username" value="<?php echo htmlspecialchars($u['username']); ?>"
+                   id="username-input-<?php echo $u['id']; ?>" style="display:none;" required>
+        </td>
+
+        <td>
+            <span id="first-name-view-<?php echo $u['id']; ?>"><?php echo htmlspecialchars($u['first_name']); ?></span>
+            <input type="text" name="first_name" value="<?php echo htmlspecialchars($u['first_name']); ?>"
+                   id="first-name-input-<?php echo $u['id']; ?>" style="display:none;" required>
+        </td>
+
+        <td>
+            <span id="last-name-view-<?php echo $u['id']; ?>"><?php echo htmlspecialchars($u['last_name']); ?></span>
+            <input type="text" name="last_name" value="<?php echo htmlspecialchars($u['last_name']); ?>"
+                   id="last-name-input-<?php echo $u['id']; ?>" style="display:none;" required>
+        </td>
+
+        <td>
+            <span id="email-view-<?php echo $u['id']; ?>"><?php echo htmlspecialchars($u['email']); ?></span>
+            <input type="email" name="email" value="<?php echo htmlspecialchars($u['email']); ?>"
+                   id="email-input-<?php echo $u['id']; ?>" style="display:none;" required>
+        </td>
+
+        <td>
+            <button type="button" id="edit-btn-<?php echo $u['id']; ?>" onclick="toggleEdit(<?php echo $u['id']; ?>)"
+                    class="btn btn-info btn-sm">Rediģēt</button>
+
+            <button type="submit" id="save-btn-<?php echo $u['id']; ?>"
+                    style="display:none;" class="btn btn-success btn-sm">Saglabāt</button>
+
+            <button type="button" id="cancel-btn-<?php echo $u['id']; ?>"
+                    onclick="toggleEdit(<?php echo $u['id']; ?>)"
+                    style="display:none;" class="btn btn-secondary btn-sm">Atcelt</button>
+        </td>
+
+    </form>
+
+    <td>
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+            <input type="hidden" name="action" value="update_role">
+            <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
+            
+            <select name="role" onchange="this.form.submit()">
+                <option value="admin"   <?= $u['role']=='admin'?'selected':'' ?>>Admin</option>
+                <option value="teacher" <?= $u['role']=='teacher'?'selected':'' ?>>Teacher</option>
+                <option value="student" <?= $u['role']=='student'?'selected':'' ?>>Student</option>
+            </select>
+        </form>
+    </td>
+
+</tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 </div>
- <script src="../../../../../../assets/js/script.js"></script>
-    <script>
+<script src="../../../../../../assets/js/script.js"></script>
+<script>
 function toggleUserMenu() {
             const menu = document.getElementById('userMenu');
             menu.classList.toggle('d-none');
@@ -110,5 +119,52 @@ function toggleUserMenu() {
                 menu.classList.add('d-none');
             }
         });
-    </script>
+    function toggleEdit(userId) {
+        // Laukus, kurus mēs pārslēgsim
+        const fields = ['username', 'first-name', 'last-name', 'email'];
+        
+        // Pārslēdz pogu redzamību
+        const editBtn = document.getElementById('edit-btn-' + userId);
+        const saveBtn = document.getElementById('save-btn-' + userId);
+        const cancelBtn = document.getElementById('cancel-btn-' + userId);
+
+        if (editBtn.style.display !== 'none') {
+            // Pārejam uz rediģēšanas režīmu (View -> Edit)
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline';
+            cancelBtn.style.display = 'inline';
+            
+            fields.forEach(field => {
+                const viewSpan = document.getElementById(field + '-view-' + userId);
+                const editInput = document.getElementById(field + '-input-' + userId);
+                
+                if (viewSpan && editInput) {
+                    viewSpan.style.display = 'none';
+                    editInput.style.display = 'inline-block';
+                }
+            });
+
+        } else {
+            // Atgriežamies pie skatīšanas režīma (Edit -> View)
+            editBtn.style.display = 'inline';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+            
+            fields.forEach(field => {
+                const viewSpan = document.getElementById(field + '-view-' + userId);
+                const editInput = document.getElementById(field + '-input-' + userId);
+                
+                if (viewSpan && editInput) {
+                    viewSpan.style.display = 'inline';
+                    editInput.style.display = 'none';
+                    
+                    // Atgriežam input lauku sākotnējo vērtību
+                    editInput.value = viewSpan.textContent;
+                }
+            });
+        }
+    }
+</script>
+
+
 <?php include '../views/components/footer.php'; ?>

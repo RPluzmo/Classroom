@@ -41,15 +41,12 @@ $assignment_files = $assignment->getAssignmentFiles($assignment_id);
 
 if ($current_user['role'] === 'student') {
     $submission = $assignment->getSubmission($assignment_id, $current_user['id']);
-    if ($submission) {
-        $submission_files = $assignment->getSubmissionFiles($submission['id']);
-        $comments = $comment->getSubmissionComments($submission['id']);
-    }
+    $submission_files = $submission ? $assignment->getSubmissionFiles($submission['id']) : [];
+    $comments = $comment->getAssignmentComments($assignment_id);
 } else {
     $submissions = $assignment->getSubmissions($assignment_id);
     $comments = $comment->getAssignmentComments($assignment_id);
 }
-
 // Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($current_user['role'] === 'student' && isset($_POST['submit_assignment'])) {
@@ -90,18 +87,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
     } elseif (isset($_POST['add_comment'])) {
-        $comment_text = sanitize($_POST['comment_text'] ?? '');
-        if (!empty($comment_text)) {
-            if ($current_user['role'] === 'student' && $submission) {
-                $comment->addComment($current_user['id'], $comment_text, null, $submission['id']);
-            } elseif ($current_user['role'] === 'teacher') {
-                $comment->addComment($current_user['id'], $comment_text, $assignment_id, null);
-            }
-            setFlashMessage('success', 'Comment added!');
-            header('Location: assignment.php?id=' . $assignment_id);
-            exit();
-        }
+    $comment_text = sanitize($_POST['comment_text'] ?? '');
+    if (!empty($comment_text)) {
+        $sub_id = $submission['id'] ?? null;
+        $comment->addComment($current_user['id'], $comment_text, $assignment_id, $sub_id);
+        setFlashMessage('success', 'Comment added!');
+        header('Location: assignment.php?id=' . $assignment_id);
+        exit();
     }
 }
-require '../views/assignment.view.php';
+}
+
+        
+    
+
+require '../views/assignnment.view.php';
 ?>

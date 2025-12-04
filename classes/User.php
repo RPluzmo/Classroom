@@ -8,6 +8,80 @@ class User {
         $this->conn = $this->db->connect();
     }
 
+
+    
+public function deleteUser(int $admin_id, int $user_id): bool {
+        // Nav atļauts dzēst pašam sevi
+        if ($admin_id === $user_id) {
+            return false;
+        }
+
+        try {
+            $this->conn->beginTransaction();
+
+            // 1. Iegūst lietotāja datus, lai iegūtu profila attēla ceļu
+            $stmt = $this->conn->prepare("SELECT profile_picture FROM users WHERE id = ?");
+            $stmt->execute([$user_id]);
+            $user_data = $stmt->fetch();
+            $file_path = $user_data['profile_picture'] ?? null;
+
+            // 2. Dzēš saistītos ierakstus (atkarīgs no Jūsu shēmas, bet drošībai)
+            $stmt = $this->conn->prepare("DELETE FROM user_sessions WHERE user_id = ?");
+            $stmt->execute([$user_id]);
+
+            $stmt = $this->conn->prepare("DELETE FROM user_settings WHERE user_id = ?");
+            $stmt->execute([$user_id]);
+            
+            // Jums var būt jāpievieno vairāk DZEŠANAS priekš: user_classes, submissions utt.
+
+            // 3. Dzēš pašu lietotāju
+            $stmt = $this->conn->prepare("DELETE FROM users WHERE id = ?");
+            $result = $stmt->execute([$user_id]);
+            
+            // 4. Dzēš profila attēlu no failu sistēmas (Jums jāaizvieto 'uploads/' ar reālo ceļu)
+            if ($result && $file_path && file_exists($file_path) && strpos($file_path, 'uploads/') !== false) {
+                 unlink($file_path);
+            }
+
+            // 5. Reģistrē darbību
+            $this->logAction($admin_id, 'user_deleted', "Admin dzēsa lietotāju ar ID: $user_id", $user_id, 'user');
+
+            $this->conn->commit();
+            return $result;
+
+        } catch(PDOException $e) {
+            $this->conn->rollBack();
+            // error_log("Kļūda lietotāja dzēšanā: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function removeProfilePicture(int $admin_id, int $user_id): bool {
+        try {
+            // 1. Iegūst profila attēla ceļu pirms dzēšanas
+            $stmt = $this->conn->prepare("SELECT profile_picture FROM users WHERE id = ?");
+            $stmt->execute([$user_id]);
+            $current_path = $stmt->fetchColumn();
+
+            // 2. Atjaunina datubāzi, iestatot profila attēla lauku uz NULL
+            $stmt = $this->conn->prepare("UPDATE users SET profile_picture = NULL WHERE id = ?");
+            $result = $stmt->execute([$user_id]);
+
+            // 3. Dzēš failu no failu sistēmas (Jums jāaizvieto 'uploads/' ar reālo ceļu)
+            if ($result && $current_path && file_exists($current_path) && strpos($current_path, 'uploads/') !== false) {
+                unlink($current_path);
+            }
+
+            // 4. Reģistrē darbību
+            $this->logAction($admin_id, 'profile_picture_removed', "Admin noņēma lietotāja ID: $user_id profila attēlu.", $user_id, 'user');
+
+            return $result;
+
+        } catch(PDOException $e) {
+            return false;
+        }
+    }
+
 public function exists(string $column, string $value): bool {
         try {
             // Pārbauda, lai $column būtu drošs lauks
@@ -178,61 +252,70 @@ public function exists(string $column, string $value): bool {
         }
     }
 
-    public function getActionHistory($limit = 50) {
-        try {
-            $stmt = $this->conn->prepare("
-                SELECT ah.*, u.username, u.first_name, u.last_name 
-                FROM action_history ah 
-                JOIN users u ON ah.user_id = u.id 
-                ORDER BY ah.created_at DESC 
-                LIMIT ?
-            ");
-            $stmt->execute([$limit]);
-            return $stmt->fetchAll();
-        } catch(PDOException $e) {
-            return [];
-        }
+
+public function getActionHistory(int $limit = 100) {
+    try {
+        $stmt = $this->conn->prepare("
+            SELECT ah.*, u.username, u.first_name, u.last_name
+            FROM action_history ah
+            JOIN users u ON ah.user_id = u.id
+            ORDER BY ah.created_at DESC
+            LIMIT ?
+        ");
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (PDOException $e) {
+        return [];
     }
+}
 
     private function logAction($user_id, $action_type, $action_description, $target_id = null, $target_type = null) {
-        try {
-            $ip_address = $_SERVER['REMOTE_ADDR'] ?? '';
-            $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-            
-            $stmt = $this->conn->prepare("
-                INSERT INTO action_history (user_id, action_type, action_description, target_id, target_type, ip_address, user_agent) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            ");
-            $stmt->execute([$user_id, $action_type, $action_description, $target_id, $target_type, $ip_address, $user_agent]);
-        } catch(PDOException $e) {
-            // Log errors but don't break the application
-        }
+    try {
+        $stmt = $this->conn->prepare("
+            INSERT INTO action_history (user_id, action_type, action_description, target_id, target_type)
+            VALUES (?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([$user_id, $action_type, $action_description, $target_id, $target_type]);
+    } catch(PDOException $e) {
+        // optional: error_log($e->getMessage());
     }
+}
 
-    public function adminUpdateUser(int $admin_id, int $user_id, string $first_name, string $last_name, $password = null): bool {
-        $sql = "UPDATE users SET first_name = ?, last_name = ?";
-        $params = [$first_name, $last_name];
-        
-        if (!empty($password)) {
-            // Jūsu esošā klase glabā paroles kā plain text. Drošības labad vajadzētu izmantot password_hash, bet šajā piemērā mēs pieturamies pie Jūsu esošās loģikas.
-            $sql .= ", password = ?";
-            $params[] = $password;
+   public function adminUpdateUser(
+    int $admin_id, 
+    int $user_id, 
+    string $username, 
+    string $first_name, 
+    string $last_name, 
+    string $email
+): bool {
+
+    $sql = "UPDATE users 
+            SET username = ?, 
+                first_name = ?, 
+                last_name = ?, 
+                email = ?
+            WHERE id = ?";
+
+    try {
+        $stmt = $this->conn->prepare($sql);
+        $result = $stmt->execute([
+            $username,
+            $first_name,
+            $last_name,
+            $email,
+            $user_id
+        ]);
+
+        if ($result) {
+            $this->logAction($admin_id, 'user_data_updated', "Admin updated user ID $user_id data.", $user_id, 'user');
         }
-        
-        $sql .= " WHERE id = ?";
-        $params[] = $user_id;
-        
-        try {
-            $stmt = $this->conn->prepare($sql);
-            $result = $stmt->execute($params);
-            
-            if ($result) {
-                $this->logAction($admin_id, 'user_data_updated', "Admin atjaunināja lietotāja ID $user_id datus.", $user_id, 'user');
-            }
-            
-            return $result;
-        } catch(PDOException $e) {
-            return false;
-        }
+
+        return $result;
+
+    } catch(PDOException $e) {
+        return false;
     }
+}
 }
