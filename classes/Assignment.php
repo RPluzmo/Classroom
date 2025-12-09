@@ -135,6 +135,62 @@ class Assignment {
         }
     }
 
+public function deleteAssignment($teacher_id, $assignment_id) {
+    try {
+        // Pārbaude, vai skolotājs pieder pie šī uzdevuma klases
+        $stmt = $this->conn->prepare("
+            SELECT c.teacher_id, a.title 
+            FROM assignments a
+            JOIN classes c ON a.class_id = c.id
+            WHERE a.id = ?
+        ");
+        $stmt->execute([$assignment_id]);
+        $assignment = $stmt->fetch();
+
+        if (!$assignment || $assignment['teacher_id'] != $teacher_id) {
+            return false; // Nav tiesību dzēst
+        }
+
+        // Dzēst visus iesniegumus un failus
+        $submissions = $this->getSubmissions($assignment_id);
+        foreach ($submissions as $sub) {
+            $sub_files = $this->getSubmissionFiles($sub['id']);
+            foreach ($sub_files as $file) {
+                if (file_exists($file['file_path'])) {
+                    unlink($file['file_path']); // dzēš failu no servera
+                }
+            }
+            $stmt_del_files = $this->conn->prepare("DELETE FROM submission_files WHERE submission_id = ?");
+            $stmt_del_files->execute([$sub['id']]);
+        }
+
+        // Dzēst iesniegumus
+        $stmt_del_sub = $this->conn->prepare("DELETE FROM submissions WHERE assignment_id = ?");
+        $stmt_del_sub->execute([$assignment_id]);
+
+        // Dzēst pievienotos uzdevuma failus
+        $assignment_files = $this->getAssignmentFiles($assignment_id);
+        foreach ($assignment_files as $file) {
+            if (file_exists($file['file_path'])) {
+                unlink($file['file_path']);
+            }
+        }
+        $stmt_del_files = $this->conn->prepare("DELETE FROM assignment_files WHERE assignment_id = ?");
+        $stmt_del_files->execute([$assignment_id]);
+
+        // Dzēst pats uzdevumu
+        $stmt_del_assignment = $this->conn->prepare("DELETE FROM assignments WHERE id = ?");
+        $stmt_del_assignment->execute([$assignment_id]);
+
+        // Log
+        $this->logAction($teacher_id, 'assignment_delete', "Deleted assignment: " . $assignment['title'], $assignment_id, 'assignment');
+
+        return true;
+    } catch(PDOException $e) {
+        return false;
+    }
+}
+
     public function gradeSubmission($teacher_id, $submission_id, $grade, $feedback = null) {
         try {
             $stmt = $this->conn->prepare("

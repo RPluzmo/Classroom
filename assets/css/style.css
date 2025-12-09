@@ -401,6 +401,7 @@ select.form-control {
     padding: 20px;
     margin-bottom: 16px;
     transition: all 0.3s ease;
+    word-break: break-word;
 }
 
 .assignment-card:hover {
@@ -414,11 +415,8 @@ select.form-control {
     margin-bottom: 8px;
 }
 
-.assignment-meta {
-    display: flex;
-    gap: 16px;
-    font-size: 14px;
-    color: var(--text-secondary);
+.assignment-meta > * {
+    min-width: 0;
 }
 
 .assignment-status {
@@ -654,6 +652,7 @@ select.form-control {
 
     .card {
         padding: 16px;
+        word-break: break-word;
     }
 
     .btn {
@@ -750,3 +749,10 @@ select.form-control {
 .p-3 { padding: 12px; }
 .p-4 { padding: 16px; }
 .p-5 { padding: 20px; }
+
+.break-word,
+.break-word * {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+}

@@ -1,7 +1,8 @@
 <?php
 require_once '../functions.php';
 
-// Redirect if already logged in
+$pageTitle = "Login";
+
 if ($user->isAuthenticated()) {
     header('Location: dashboard.php');
     exit();

@@ -8,6 +8,13 @@
                 <!-- Assignment Header -->
                 <div class="card" style="margin-bottom: 24px;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+                        <?php if ($current_user['role'] === 'teacher'): ?>
+                            <form method="POST" onsubmit="return confirm('Vai tiešām dzēst šo uzdevumu?');">
+                                <button type="submit" name="delete_assignment" class="btn btn-danger">
+                                    🗑 Dzēst uzdevumu
+                                </button>
+                            </form>
+                        <?php endif; ?>
                         <div>
                             <h1 style="font-size: 28px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
                                 <?php echo htmlspecialchars($assignment_data['title']); ?>
@@ -69,8 +76,9 @@
                         <!-- Assignment Description -->
                         <div class="card" style="margin-bottom: 24px;">
                             <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">Uzdevums</h2>
-                            <div style="color: var(--text-primary); line-height: 1.6;">
-                                <?php echo nl2br(htmlspecialchars($assignment_data['description'])); ?>
+                            <h3>Uzdevuma apraksts:</h3>
+                            <div  style="color: var(--text-primary); line-height: 1.6;">
+                                <p class="assignment-title"><?php echo nl2br(htmlspecialchars($assignment_data['description'])); ?></p>
                             </div>
                             
                             <?php if (!empty($assignment_files)): ?>
@@ -194,7 +202,7 @@
                                                     if (!empty($sub_files)): 
                                                     ?>
                                                         <div style="margin: 12px 0;">
-                                                            <div style="font-weight: 500; margin-bottom: 8px;">Pielikumi:</div>
+                                                            <div style="font-weight: 500; margin-bottom: 8px;">Skolnieka pielikumi:</div>
                                                             <?php foreach ($sub_files as $file): ?>
                                                                 <div class="file-item" style="display: inline-flex; margin-right: 8px; margin-bottom: 4px;">
                                                                     <span class="file-icon">📄</span>

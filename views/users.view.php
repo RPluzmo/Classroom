@@ -65,7 +65,6 @@ require "../views/components/header.php";
 </style>
 
 <div class="container mt-5">
-    <h2><?php echo $page_title; ?></h2>
 
     <?php if ($message): ?>
         <div style="padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 15px; border-radius: 4px;"><?php echo $message; ?></div>

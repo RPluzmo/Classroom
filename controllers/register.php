@@ -1,5 +1,7 @@
 <?php
 require_once '../functions.php';
+require_once __DIR__ . "/../classes/Validation.php";
+
 
 // Redirect if logged in
 if ($user->isAuthenticated()) {
@@ -20,6 +22,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($first_name === '' || $last_name === '' || $email === '' || $password === '') {
         $errors[] = "Visi lauki ir obligāti.";
     }
+
+$errors = [];
+
+if (!Validation::name($_POST['first_name'])) {
+    $errors[] = "Vārds drīkst saturēt tikai burtus.";
+}
+
+if (!Validation::name($_POST['last_name'])) {
+    $errors[] = "Uzvārds drīkst saturēt tikai burtus.";
+}
+
+if (!empty($errors)) {
+    $_SESSION['errors'] = $errors;
+    header("Location: register.php");
+    exit;
+}
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "Neatbilstošs e-pasta formāts.";

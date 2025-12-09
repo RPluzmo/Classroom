@@ -2,6 +2,8 @@
 require_once '../functions.php';
 requireAuth();
 
+$pageTitle = "Dashboard";
+
 $current_user = $user->getCurrentUser();
 $user_classes = [];
 $user_assignments = [];

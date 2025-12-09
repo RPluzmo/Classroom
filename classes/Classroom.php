@@ -24,6 +24,43 @@ public function getClassesByTeacher(int $teacher_id): array {
     }
 }
 
+public function deleteClass($teacher_id, $class_id) {
+    try {
+        // Pārbaude, vai skolotājs pieder šai klasei
+        $stmt = $this->conn->prepare("SELECT name FROM classes WHERE id = ? AND teacher_id = ?");
+        $stmt->execute([$class_id, $teacher_id]);
+        $class = $stmt->fetch();
+        if (!$class) return false;
+
+        // Dzēst visus uzdevumus klasē
+        $stmt_assignments = $this->conn->prepare("SELECT id FROM assignments WHERE class_id = ?");
+        $stmt_assignments->execute([$class_id]);
+        $assignments = $stmt_assignments->fetchAll();
+
+        // Izveido Assignment objektu
+        $assignmentObj = new Assignment();
+        foreach ($assignments as $a) {
+            $assignmentObj->deleteAssignment($teacher_id, $a['id']); // teacher_id nodod metodei
+        }
+
+        // Dzēst studentus no klases
+        $stmt_del_members = $this->conn->prepare("DELETE FROM class_members WHERE class_id = ?");
+        $stmt_del_members->execute([$class_id]);
+
+        // Dzēst pašu klasi
+        $stmt_del_class = $this->conn->prepare("DELETE FROM classes WHERE id = ?");
+        $stmt_del_class->execute([$class_id]);
+
+        // Log
+        $this->logAction($teacher_id, 'class_delete', "Deleted class: " . $class['name'], $class_id, 'class');
+
+        return true;
+    } catch(PDOException $e) {
+        return false;
+    }
+}
+
+
     public function createClass($teacher_id, $name, $description) {
         try {
             $class_code = $this->generateClassCode();

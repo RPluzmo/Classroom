@@ -7,7 +7,15 @@
             <div class="content">
                 <!-- Class Header -->
                 <div class="card" style="margin-bottom: 24px;">
+                    <?php if ($current_user['role'] === 'teacher'): ?>
+                            <form method="POST" onsubmit="return confirm('Vai tiešām dzēst šo kursu? Tas dzēsīs VISUS uzdevumus un iesniegumus!');">
+                                <button type="submit" name="delete_class" class="btn btn-danger">
+                                    🗑 Dzēst kursu
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+                        
                         <div>
                             <h1 style="font-size: 28px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
                                 <?php echo htmlspecialchars($class['name']); ?>
@@ -23,13 +31,13 @@
                         <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
                             <?php if ($current_user['role'] === 'teacher'): ?>
                                 <button onclick="showQRCode()" class="btn btn-secondary">
-                                    <span>📱</span> Rādīt QR kodu.
+                                    Rādīt QR kodu.
                                 </button>
                                 <button onclick="copyClassCode()" class="btn btn-secondary copy-btn" data-copy="<?php echo htmlspecialchars($class['class_code']); ?>">
-                                    <span>📋</span> Kopēt kursa kodu.
+                                    Kopēt kursa kodu.
                                 </button>
                                 <a href="../controllers/create_assignment.php?class_id=<?php echo $class_id; ?>" class="btn btn-primary">
-                                    <span>➕</span> Izveidot uzdevumu.
+                                    Izveidot uzdevumu.
                                 </a>
                             <?php endif; ?>
                         </div>
@@ -86,7 +94,6 @@
 
                             <?php if (empty($assignments)): ?>
                                 <div style="text-align: center; padding: 40px;">
-                                    <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
                                     <h3 style="color: var(--text-primary); margin-bottom: 8px;">Nav neviena uzdevuma</h3>
                                 </div>
                             <?php else: ?>
@@ -101,7 +108,7 @@
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                                             <div style="flex: 1;">
                                                 <h3 class="assignment-title"><?php echo htmlspecialchars($assign['title']); ?></h3>
-                                                <p style="color: var(--text-secondary); font-size: 14px; margin: 8px 0;">
+                                                <p class="break-word" style="color: var(--text-secondary); font-size: 14px; margin: 8px 0;">
                                                     <?php 
                                                     $description = strip_tags($assign['description']);
                                                     echo strlen($description) > 100 ? substr($description, 0, 100) . '...' : $description;
@@ -117,7 +124,7 @@
                                                             <span class="assignment-status status-submitted">Iesniegti</span>
                                                         <?php endif; ?>
                                                     <?php else: ?>
-                                                        <span class="assignment-status status-pending">Nav iesniegti</span>
+                                                        <span class="assignment-status status-pending">Nav iesniegts</span>
                                                     <?php endif; ?>
                                                 <?php else: ?>
                                                     <span style="color: var(--text-secondary); font-size: 14px;">
@@ -144,9 +151,8 @@
                         <!-- Class Code (Student View) -->
                         <?php if ($current_user['role'] === 'student'): ?>
                             <div class="card" style="margin-bottom: 20px;">
-                                <h3 style="font-size: 16px; margin-bottom: 12px;">Class Information</h3>
+                                <h3 style="font-size: 16px; margin-bottom: 12px;">Kursa kods</h3>
                                 <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 4px;">Kursa kods</div>
                                     <div style="font-size: 20px; font-weight: 600; color: var(--primary-color); letter-spacing: 2px;">
                                         <?php echo htmlspecialchars($class['class_code']); ?>
                                     </div>
@@ -158,7 +164,7 @@
                         <?php if ($current_user['role'] === 'teacher' || count($class_members) <= 10): ?>
                             <div class="card">
                                 <h3 style="font-size: 16px; margin-bottom: 12px;">
-                                    <?php echo $current_user['role'] === 'teacher' ? 'Class Members' : 'Classmates'; ?>
+                                    <?php echo $current_user['role'] === 'teacher' ? 'Class Members' : 'Klasesbiedri'; ?>
                                 </h3>
                                 <?php if (empty($class_members)): ?>
                                     <p style="color: var(--text-secondary); text-align: center; padding: 20px;">

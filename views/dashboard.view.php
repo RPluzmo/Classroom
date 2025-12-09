@@ -127,7 +127,7 @@
                         <?php if (empty($user_classes)): ?>
                             <div style="text-align: center; padding: 40px;">
                                 <h3 style="color: var(--text-primary); margin-bottom: 8px;">Te nekā nav</h3>
-                                <a href="controllers/join_class.php" class="btn btn-primary">Pievienoties kursam</a>
+                                <a href="../controllers/join_class.php" class="btn btn-primary">Pievienoties kursam</a>
                             </div>
                         <?php else: ?>
                             <div class="grid grid-cols-3">
@@ -160,7 +160,7 @@
                                                 <span class="assignment-status status-submitted">Iesniegts</span>
                                             <?php endif; ?>
                                         <?php else: ?>
-                                            <span class="assignment-status status-pending">Gaida</span>
+                                            <span class="assignment-status status-pending">Neiesniegts</span>
                                         <?php endif; ?>
                                     </div>
                                 </div>

@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 }
 
 $users = $user->getAllUsers();
-$page_title = "Lietotāju pārvaldība";
+$pageTitle = "Lietotāju pārvaldība";
 
 require '../views/users.view.php';
 

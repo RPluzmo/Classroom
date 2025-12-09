@@ -14,7 +14,7 @@ require "../views/components/header.php";
         <div style="text-align: center; padding: 40px;">
             <h3 style="color: var(--text-primary); margin-bottom: 8px;">Te nekā nav</h3>
             <p style="color: var(--text-secondary); margin-bottom: 16px;">Šeit parādīsies visi jūsu kursi.</p>
-            <a href="teacher/create_class.php" class="btn btn-primary">Pievienot kursu</a>
+            <a href="create_class.php" class="btn btn-primary">Pievienot kursu</a>
         </div>
     <?php else: ?>
         <div class="grid grid-cols-3 gap-6">

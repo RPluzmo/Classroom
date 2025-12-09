@@ -1,5 +1,7 @@
 <?php
 require_once '../functions.php';
+require_once __DIR__ . "/../classes/Validation.php";
+
 requireAuth();
 
 $pageTitle = "Lietotājprofils";
@@ -8,6 +10,7 @@ $current_user = $user->getCurrentUser();
 $error = '';
 $success = '';
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_profile'])) {
         $first_name = sanitize($_POST['first_name'] ?? '');
@@ -15,9 +18,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = sanitize($_POST['email'] ?? '');
         
         if (empty($first_name) || empty($last_name) || empty($email)) {
-            $error = 'Aizpildiet visus lauciņus';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error = 'Neatbilstoš epasts';
+    $error = 'Aizpildiet visus lauciņus';
+
+} elseif (!Validation::name($first_name)) {
+    $error = 'Vārds drīkst saturēt tikai burtus.';
+
+} elseif (!Validation::name($last_name)) {
+    $error = 'Uzvārds drīkst saturēt tikai burtus.';
+
+} elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $error = 'Neatbilstošs epasts';
         } else {
             if ($user->updateProfile($current_user['id'], $first_name, $last_name, $email)) {
                 $success = 'Profils izmainīts';

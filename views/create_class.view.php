@@ -34,7 +34,7 @@
 
                         <div style="display: flex; gap: 12px;">
                             <button type="submit" class="btn btn-primary" style="flex: 1;">
-                                <span>✨</span> Izveidot kursu
+                                Izveidot kursu
                             </button>
                             <a href="dashboard.php" class="btn btn-secondary">
                                 Atcelt
