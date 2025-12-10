@@ -61,7 +61,7 @@
                            <h2>Čau <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
                         </div>
                         <a href="../controllers/create_class.php" class="btn btn-primary">
-                            <span>➕</span> Pievienot kursu
+                            Pievienot kursu
                         </a>
                     </div>
 
@@ -96,7 +96,6 @@
                                 <div class="assignment-card">
                                     <h3 class="assignment-title"><?php echo htmlspecialchars($assign['title']); ?></h3>
                                     <div class="assignment-meta">
-                                        <span>📁 <?php echo htmlspecialchars($assign['title']);?></span>
                                         <span>📅 <?php echo $assign['due_date'] ? date('M j, Y', strtotime($assign['due_date'])) : 'No due date'; ?></span>
                                         <span>✅ <?php echo $assign['graded_count']; ?>/<?php echo $assign['submission_count']; ?> Novērtēti</span>
                                     </div>
@@ -118,7 +117,7 @@
                             <h2>Čau <?php echo htmlspecialchars($current_user['username']); ?>!</h2>
                         </div>
                         <a href="../controllers/join_class.php" class="btn btn-primary">
-                            <span>➕</span> Pievienoties kursam
+                            Pievienoties kursam
                         </a>
                     </div>
 

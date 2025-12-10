@@ -5,6 +5,8 @@ require_once '../functions.php';
 // Tikai adminiem
 requireRole('admin');
 
+$pageTitle = "Lietotāji";
+
 global $user;
 $current_user = $user->getCurrentUser();
 
@@ -48,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 if ($_SERVER['REQUEST_METHOD'] === 'POST'
     && ($_POST['action'] ?? '') === 'admin_update_user') {
 
+
     if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
         setFlashMessage('error', "Nederīgs CSRF marķieris.itkā es zinātu kas tās ir :D");
         header('Location: users.php');
@@ -61,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
     $last_name  = filter_var($_POST['last_name'], FILTER_SANITIZE_STRING);
     $password   = $_POST['password'] ?: null;
 
+
+    
     if ($user->adminUpdateUser(
         $current_user['id'],
         $user_id,

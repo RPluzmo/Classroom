@@ -76,6 +76,12 @@
                             <div style="color: var(--text-secondary); font-size: 14px;">Gaida vērtējumu</div>
                         </div>
                     </div>
+                            <h3 style="font-size: 16px; margin-bottom: 12px;">Kursa kods</h3>
+                            <div style="background: var(--bg-secondary); padding: 12px; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 20px; font-weight: 600; color: var(--primary-color); letter-spacing: 2px;">
+                                    <?php echo htmlspecialchars($class['class_code']); ?>
+                                </div>
+                            </div>
                 </div>
 
                 <div class="grid grid-cols-3" style="gap: 24px;">
@@ -137,7 +143,7 @@
                                             <span>📅 Līdz: <?php echo $assign['due_date'] ? date('M j, Y g:i A', strtotime($assign['due_date'])) : 'No due date'; ?></span>
                                             <span>💯 Maksimālie punkti: <?php echo $assign['max_points']; ?></span>
                                             <?php if ($current_user['role'] === 'teacher' && $assign['submission_count'] > 0): ?>
-                                                <span>✅ Novērtēts: <?php echo $assign['graded_count']; ?></span>
+                                                <span>✅ Novērtēti: <?php echo $assign['graded_count']; ?></span>
                                             <?php endif; ?>
                                         </div>
                                     </div>

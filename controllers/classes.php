@@ -1,7 +1,7 @@
 <?php
 require_once '../functions.php';
 requireAuth();
-
+$pageTitle = "Kursi";
 $current_user = $user->getCurrentUser();
 
 // Pārbaude, vai lietotājs ir skolotājs

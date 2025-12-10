@@ -1,7 +1,7 @@
 <?php
 require_once '../functions.php';
 require_once __DIR__ . "/../classes/Validation.php";
-
+$pageTitle = "Reģistrēties";
 
 // Redirect if logged in
 if ($user->isAuthenticated()) {

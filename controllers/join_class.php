@@ -1,7 +1,7 @@
 <?php
 require_once '../functions.php';
 requireRole('student');
-
+$pageTitle = "Pievienoties kursam";
 $current_user = $user->getCurrentUser();
 $error = '';
 $success = '';

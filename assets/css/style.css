@@ -401,7 +401,7 @@ select.form-control {
     padding: 20px;
     margin-bottom: 16px;
     transition: all 0.3s ease;
-    word-break: break-word;
+
 }
 
 .assignment-card:hover {
@@ -659,6 +659,17 @@ select.form-control {
         padding: 8px 16px;
         font-size: 13px;
     }
+        .assignment-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+
+    .assignment-points {
+        text-align: left !important;
+        width: 100%;
+    }
+
 }
 
 @media (max-width: 412px) {
@@ -750,9 +761,51 @@ select.form-control {
 .p-4 { padding: 16px; }
 .p-5 { padding: 20px; }
 
-.break-word,
-.break-word * {
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-    white-space: normal !important;
+.assignment-header-box {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0;
+}
+
+.assignment-header-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.assignment-header-points {
+    text-align: right;
+}
+.assignment-header-points .points {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+.assignment-header-points .label {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.file-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    padding: 6px 12px;
+    margin: 4px;
+    white-space: nowrap;
+}
+.file-chip .file-name {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

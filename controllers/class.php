@@ -1,6 +1,9 @@
 <?php
 require_once '../functions.php';
 requireAuth();
+$pageTitle = "Kurss";
+
+
 require_once '../classes/Classroom.php';
 require_once '../classes/Assignment.php';
 $class_id = $_GET['class_id'] ?? $_GET['id'] ?? null;

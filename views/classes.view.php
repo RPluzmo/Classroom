@@ -6,7 +6,7 @@ require "../views/components/header.php";
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h1>Mani kursi</h1>
         <a href="create_class.php" class="btn btn-primary">
-            <span>➕</span> Pievienot kursu
+            Pievienot kursu
         </a>
     </div>
 

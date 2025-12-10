@@ -1,6 +1,8 @@
 <?php
 require_once '../functions.php';
 requireRole('teacher');
+$pageTitle = "Izveidot kursu";
+
 
 $current_user = $user->getCurrentUser();
 $error = '';

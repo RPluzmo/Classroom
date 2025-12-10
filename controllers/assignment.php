@@ -2,6 +2,8 @@
 require_once '../functions.php';
 requireAuth();
 
+$pageTitle = "Uzdevums";
+
 $assignment_id = $_GET['id'] ?? null;
 if (!$assignment_id) {
     header('Location: dashboard.php');

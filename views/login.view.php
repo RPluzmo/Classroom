@@ -66,7 +66,7 @@
             <div style="text-align: center; margin-top: 24px;">
                 <p style="color: var(--text-secondary);">
                     Vai nēsi reģistrējies?? 
-                    <a href="register.php" style="color: var(--primary-color); text-decoration: none;">Sign up</a>
+                    <a href="register.php" style="color: var(--primary-color); text-decoration: none;">Reģistrēties</a>
                 </p>
             </div>
         </div>

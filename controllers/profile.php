@@ -9,7 +9,7 @@ $pageTitle = "Lietotājprofils";
 $current_user = $user->getCurrentUser();
 $error = '';
 $success = '';
-
+$pageTitle = "Letotājprofils";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_profile'])) {
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $success = 'Profils izmainīts';
                 $current_user = $user->getCurrentUser(); // Refresh user data
             } else {
-                $error = 'Nesanāca nomainīt profila attēlu';
+                $error = 'Epasts tiek izmantots';
             }
         }
     } elseif (isset($_POST['upload_avatar'])) {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $success = 'Profila attēls nomainīts';
                         $current_user = $user->getCurrentUser(); // Refresh user data
                     } else {
-                        $error = 'Nesanāca nomainīt profila attēlu';
+                        
                     }
                 } else {
                     $error = 'Nesanāca augšupielādēt';

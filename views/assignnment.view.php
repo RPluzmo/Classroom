@@ -6,69 +6,34 @@
         <div class="container">
             <div class="content">
                 <!-- Assignment Header -->
-                <div class="card" style="margin-bottom: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
-                        <?php if ($current_user['role'] === 'teacher'): ?>
-                            <form method="POST" onsubmit="return confirm('Vai tiešām dzēst šo uzdevumu?');">
-                                <button type="submit" name="delete_assignment" class="btn btn-danger">
-                                    🗑 Dzēst uzdevumu
-                                </button>
-                            </form>
-                        <?php endif; ?>
+                <div class="assignment-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;">
+
+
+                        
+                    
+
+                        <div class="assignment-header-box">
+
                         <div>
-                            <h1 style="font-size: 28px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px;">
+                            <h1 class="assignment-header-title">
                                 <?php echo htmlspecialchars($assignment_data['title']); ?>
                             </h1>
-                            <p style="color: var(--text-secondary); margin-bottom: 16px;">
-                                <a href="class.php?id=<?php echo $assignment_data['class_id']; ?>" style="color: var(--primary-color); text-decoration: none;">
-                                    <?php echo htmlspecialchars($class['name']); ?>
-                                </a>
-                            </p>
+
+                            <a href="class.php?id=<?php echo $assignment_data['class_id']; ?>" 
+                            style="color: var(--primary-color); text-decoration:none;">
+                                <?php echo htmlspecialchars($class['name']); ?>
+                            </a>
                         </div>
-                        
-                        <div style="text-align: right;">
-                            <div style="font-size: 24px; font-weight: 600; color: var(--primary-color); margin-bottom: 4px;">
-                                <?php echo $assignment_data['max_points']; ?>
-                            </div>
-                            <div style="color: var(--text-secondary); font-size: 14px;">Punkti</div>
-                            
-                            <?php if ($current_user['role'] === 'student' && $submission && $submission['grade'] !== null): ?>
-                                <div style="margin-top: 12px; padding: 8px 16px; background: var(--success-color); color: white; border-radius: 20px; font-weight: 500;">
-                                    Tavs vērtējums: <?php echo $submission['grade']; ?>/<?php echo $assignment_data['max_points']; ?>
-                                </div>
-                            <?php endif; ?>
+
+                        <div class="assignment-header-points">
+                            <div class="points"><?php echo $assignment_data['max_points']; ?></div>
+                            <div class="label">Punkti</div>
+                           
                         </div>
+
                     </div>
 
-                    <div style="display: flex; gap: 24px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                        <div>
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 4px;">Izpildes datums</div>
-                            <div style="font-weight: 500;">
-                                <?php echo $assignment_data['due_date'] ? date('M j, Y g:i A', strtotime($assignment_data['due_date'])) : 'No due date'; ?>
-                            </div>
-                        </div>
-                        <div>
-                            <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 4px;">Status</div>
-                            <div style="font-weight: 500;">
-                                <?php if ($current_user['role'] === 'student'): ?>
-                                    <?php if ($submission): ?>
-                                        <?php if ($submission['grade'] !== null): ?>
-                                            <span style="color: var(--success-color);">✅ Novērtēts</span>
-                                        <?php else: ?>
-                                            <span style="color: var(--primary-color);">📤 Iesniegts</span>
-                                        <?php endif; ?>
-                                    <?php else: ?>
-                                        <span style="color: var(--warning-color);">⏳ Nav iesniegts</span>
-                                    <?php endif; ?>
-                                <?php else: ?>
-                                    <span style="color: var(--primary-color);">
-                                        <?php echo count($submissions); ?>/<?php echo count($classroom->getClassMembers($assignment_data['class_id'])); ?> Iesnieguši
-                                    </span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
                     </div>
-                </div>
 
                 <div class="grid grid-cols-3" style="gap: 24px;">
                     <!-- Main Content -->
@@ -87,7 +52,6 @@
                                     <div class="file-item">
                                         <span class="file-icon">📄</span>
                                         <span class="file-name"><?php echo htmlspecialchars($file['file_name']); ?></span>
-                                        <span class="file-size"><?php echo round($file['file_size'] / 1024, 1); ?> KB</span>
                                         <a href="<?php echo $file['file_path']; ?>" class="btn btn-secondary btn-sm" download>Lejupielādēt</a>
                                     </div>
                                 <?php endforeach; ?>
@@ -125,7 +89,6 @@
                                                     <div class="file-item">
                                                         <span class="file-icon">📄</span>
                                                         <span class="file-name"><?php echo htmlspecialchars($file['file_name']); ?></span>
-                                                        <span class="file-size"><?php echo round($file['file_size'] / 1024, 1); ?> KB</span>
                                                         <a href="<?php echo $file['file_path']; ?>" class="btn btn-secondary btn-sm" download>Lejupielādēt</a>
                                                     </div>
                                                 <?php endforeach; ?>
@@ -146,10 +109,10 @@
                                 <form method="POST" enctype="multipart/form-data">
                                     <div class="form-group">
                                         <label class="form-label">
-                                            <?php echo $submission ? 'Resubmit Work' : 'Submit Your Work'; ?>
+                                            <?php echo $submission ? 'Iesniegt darbu' : 'Iesniegt darbu'; ?>
                                         </label>
                                         <div class="file-upload" id="dropZone">
-                                            <div style="font-size: 48px; margin-bottom: 16px;">📤</div>
+                                            <div style="font-size: 48px; margin-bottom: 16px;">:]</div>
                                             <p style="color: var(--text-primary); margin-bottom: 8px; font-weight: 500;">
                                                 Iemet vai izvēlies failus
                                             </p>
@@ -165,7 +128,7 @@
                                     </div>
 
                                     <button type="submit" name="submit_assignment" class="btn btn-primary">
-                                        <span>📤</span> <?php echo $submission ? 'Resubmit' : 'Submit'; ?>
+                                        <span>📤</span> <?php echo $submission ? 'Iesniegt darbu' : 'Iesniegt darbu'; ?>
                                     </button>
                                 </form>
                             </div>
@@ -181,6 +144,23 @@
                                     </p>
                                 <?php else: ?>
                                     <?php foreach ($submissions as $sub): ?>
+                                        <div style="text-align: center;">
+                                                    <?php if ($sub['grade'] !== null): ?>
+                                                        <div style="font-size: 24px; font-weight: 600; color: var(--success-color); margin-bottom: 4px;">
+                                                            <h1><?php echo $sub['grade']; ?>/<?php echo $assignment_data['max_points']; ?><h1>
+                                                        </div>
+                                                        <button onclick="editGrade(<?php echo $sub['id']; ?>, <?php echo $sub['grade']; ?>, '<?php echo htmlspecialchars($sub['feedback']); ?>')" 
+                                                                class="btn btn-secondary btn-sm">
+                                                            Rediģēt vērtējumu
+                                                        </button>
+                                                    <?php else: ?>
+                                                        <button onclick="showGradeForm(<?php echo $sub['id']; ?>)" 
+                                                                class="btn btn-primary btn-sm">
+                                                            Novērtēt
+                                                        </button>
+                                                    <?php endif; ?>
+                                                </div>
+                                                
                                         <div class="assignment-card">
                                             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                                                 <div style="flex: 1;">
@@ -207,8 +187,9 @@
                                                                 <div class="file-item" style="display: inline-flex; margin-right: 8px; margin-bottom: 4px;">
                                                                     <span class="file-icon">📄</span>
                                                                     <span class="file-name"><?php echo htmlspecialchars($file['file_name']); ?></span>
-                                                                    <a href="<?php echo $file['file_path']; ?>" class="btn btn-secondary btn-sm" download>Lejupielādēt</a>
+                                                                    
                                                                 </div>
+                                                                <a href="<?php echo $file['file_path']; ?>" class="btn btn-secondary btn-sm" download>Lejupielādēt</a>
                                                             <?php endforeach; ?>
                                                         </div>
                                                     <?php endif; ?>
@@ -223,24 +204,11 @@
                                                     <?php endif; ?>
                                                 </div>
                                                 
-                                                <div style="text-align: right;">
-                                                    <?php if ($sub['grade'] !== null): ?>
-                                                        <div style="font-size: 24px; font-weight: 600; color: var(--success-color); margin-bottom: 4px;">
-                                                            <?php echo $sub['grade']; ?>/<?php echo $assignment_data['max_points']; ?>
-                                                        </div>
-                                                        <button onclick="editGrade(<?php echo $sub['id']; ?>, <?php echo $sub['grade']; ?>, '<?php echo htmlspecialchars($sub['feedback']); ?>')" 
-                                                                class="btn btn-secondary btn-sm">
-                                                            Rediģēt vērtējumu
-                                                        </button>
-                                                    <?php else: ?>
-                                                        <button onclick="showGradeForm(<?php echo $sub['id']; ?>)" 
-                                                                class="btn btn-primary btn-sm">
-                                                            Vērtējums
-                                                        </button>
-                                                    <?php endif; ?>
-                                                </div>
+                                                
                                             </div>
+                                            
                                         </div>
+                                        
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </div>
@@ -289,7 +257,14 @@
                                 </button>
                             </form>
                                     </div>
-                    </div>
+                                    <?php if ($current_user['role'] === 'teacher'): ?>
+                                        <form method="POST" onsubmit="return confirm('Vai tiešām dzēst šo uzdevumu?');">
+                                            <button type="submit" name="delete_assignment" class="btn btn-danger">
+                                                🗑 Dzēst uzdevumu
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
+                         </div>
                 </div>
             </div>
         </div>
@@ -314,11 +289,10 @@
                 </div>
                 <div class="form-group">
                     <label for="feedback" class="form-label">Piebilde</label>
-                    <textarea id="feedback" name="feedback" class="form-control" rows="4" 
-                              placeholder="Provide feedback to the student..."></textarea>
+                    <textarea id="feedback" name="feedback" class="form-control" rows="4" ></textarea>
                 </div>
                 <button type="submit" name="grade_submission" class="btn btn-primary" style="width: 100%;">
-                    Submit Grade
+                    Piešķirt vērtējumu
                 </button>
             </form>
         </div>

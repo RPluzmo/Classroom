@@ -1,6 +1,7 @@
 <?php
 require_once '../functions.php';
 requireRole('teacher');
+$pageTitle = "Izveidot uzdevumu";
 
 $class_id = $_GET['class_id'] ?? null;
 if (!$class_id) {
